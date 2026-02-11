@@ -422,7 +422,7 @@ flask-unsign --sign --cookie "{'user_id': 1, 'username': 'admin', 'role': 'admin
 
 ---
 
-## 👨‍🏫 Instructor Notes
+## Instructor Notes
 
 ### Pre-Bootcamp Setup
 
