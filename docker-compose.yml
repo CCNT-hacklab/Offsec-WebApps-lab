@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  BootCamp-Lab:
+    build: .
+    container_name: BootCamp-Lab
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./instance:/app/instance
+      - ./uploads:/app/uploads
+    environment:
+      - FLASK_ENV=development
+      - DEBUG=True
+    restart: unless-stopped
+    networks:
+      - BootCamp-Lab-network
+
+networks:
+  BootCamp-Lab-network:
+    driver: bridge

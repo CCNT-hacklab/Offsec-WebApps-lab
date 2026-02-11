@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Debug Info - BootCamp-Lab{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h3 class="mb-0"><i class="fas fa-bug"></i> Debug Information</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h5><i class="fas fa-skull-crossbones"></i> CRITICAL INFORMATION DISCLOSURE</h5>
+                    <p class="mb-0">
+                        This page exposes <strong>highly sensitive</strong> application internals including:
+                        session data, cookies, headers, environment variables, configuration, and database credentials!
+                    </p>
+                </div>
+
+                <!-- Session Data -->
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Session Data</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre class="bg-dark text-light p-3 mb-0">{{ debug_info.session }}</pre>
+                    </div>
+                </div>
+
+                <!-- Cookies -->
+                <div class="card mb-3">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Cookies</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre class="bg-dark text-light p-3 mb-0">{{ debug_info.cookies }}</pre>
+                    </div>
+                </div>
+
+                <!-- Headers -->
+                <div class="card mb-3">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">HTTP Headers</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre class="bg-dark text-light p-3 mb-0" style="max-height: 300px; overflow-y: auto;">{{ debug_info.headers }}</pre>
+                    </div>
+                </div>
+
+                <!-- Configuration -->
+                <div class="card mb-3">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">Application Configuration (CRITICAL!)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-danger">
+                            <strong>SECRET_KEY:</strong> <code>{{ debug_info.secret_key }}</code><br>
+                            <strong>DATABASE_URI:</strong> <code>{{ debug_info.database_uri }}</code>
+                        </div>
+                        <pre class="bg-dark text-light p-3 mb-0" style="max-height: 400px; overflow-y: auto;">{{ debug_info.config }}</pre>
+                    </div>
+                </div>
+
+                <!-- Environment Variables -->
+                <div class="card mb-3">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">Environment Variables</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre class="bg-dark text-light p-3 mb-0" style="max-height: 500px; overflow-y: auto;">{% for key, value in debug_info.environment.items() %}
+{{ key }}={{ value }}
+{% endfor %}</pre>
+                    </div>
+                </div>
+
+                <!-- Exploitation Tips -->
+                <div class="alert alert-warning">
+                    <h5><i class="fas fa-lightbulb"></i> How to Exploit This:</h5>
+                    <ol>
+                        <li><strong>Session Manipulation:</strong> Use the SECRET_KEY to forge Flask session cookies</li>
+                        <li><strong>Database Access:</strong> Use DATABASE_URI to connect directly to the database</li>
+                        <li><strong>Environment Secrets:</strong> Look for API keys, passwords in environment variables</li>
+                        <li><strong>Cookie Forgery:</strong> Modify session cookie to escalate privileges (change role to 'admin')</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

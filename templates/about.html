@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}About - BootCamp-Lab{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0"><i class="fas fa-info-circle"></i> About BootCamp-Lab</h3>
+            </div>
+            <div class="card-body">
+                <h4>Intentionally Vulnerable Web Application</h4>
+                <p class="lead">
+                    BootCamp-Lab is designed for the <strong>Offensive Security Bootcamp</strong> to provide hands-on experience with real-world web application vulnerabilities.
+                </p>
+                
+                <div class="alert alert-warning">
+                    <h5><i class="fas fa-exclamation-triangle"></i> WARNING</h5>
+                    <p class="mb-0">
+                        This application contains <strong>intentional security vulnerabilities</strong> and should NEVER be deployed on a production environment or exposed to the internet.
+                        Use only in isolated lab environments for educational purposes.
+                    </p>
+                </div>
+
+                <h5 class="mt-4">Vulnerabilities Included:</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li>SQL Injection (Login & Search)</li>
+                            <li>Command Injection (Ping & DNS)</li>
+                            <li>Arbitrary File Upload</li>
+                            <li>Remote Code Execution</li>
+                            <li>Insecure Direct Object Reference</li>
+                            <li>Information Disclosure</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Weak Authentication</li>
+                            <li>Plain Text Password Storage</li>
+                            <li>Session Management Issues</li>
+                            <li>Broken Access Control</li>
+                            <li>Path Traversal</li>
+                            <li>Verbose Error Messages</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Information (Information Disclosure) -->
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0"><i class="fas fa-server"></i> System Information (Reconnaissance)</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-skull"></i> <strong>Information Disclosure Vulnerability:</strong> 
+                    This page exposes sensitive system information that attackers can use for reconnaissance!
+                </div>
+
+                <h5>Python Version:</h5>
+                <pre class="bg-light p-2">{{ system_info.python_version }}</pre>
+
+                <h5>Operating System:</h5>
+                <pre class="bg-light p-2">{{ system_info.os_info }}</pre>
+
+                <h5>Current User:</h5>
+                <pre class="bg-light p-2">{{ system_info.current_user }}</pre>
+
+                <h5>Working Directory:</h5>
+                <pre class="bg-light p-2">{{ system_info.working_directory }}</pre>
+
+                <h5>Environment Variables (Huge vulnerability!):</h5>
+                <div class="alert alert-danger">
+                    <strong>Critical:</strong> Environment variables may contain sensitive information like API keys, database passwords, etc.
+                </div>
+                <pre class="bg-dark text-light p-3" style="max-height: 400px; overflow-y: auto;">{% for key, value in system_info.environment.items() %}
+{{ key }}={{ value }}
+{% endfor %}</pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

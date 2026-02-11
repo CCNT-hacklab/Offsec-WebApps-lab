@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - BootCamp-Lab{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0"><i class="fas fa-tachometer-alt"></i> User Dashboard</h3>
+            </div>
+            <div class="card-body">
+                <h4>Welcome, {{ user.username }}!</h4>
+                <p class="text-muted">Manage your account and explore vulnerable features.</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h5>Account Information</h5>
+                        <table class="table">
+                            <tr>
+                                <th>User ID:</th>
+                                <td>{{ user.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Username:</th>
+                                <td>{{ user.username }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td>{{ user.email }}</td>
+                            </tr>
+                            <tr>
+                                <th>Password:</th>
+                                <td><span class="badge bg-danger">{{ user.password }}</span> (Plain text!)</td>
+                            </tr>
+                            <tr>
+                                <th>Role:</th>
+                                <td>
+                                    {% if user.role == 'admin' %}
+                                    <span class="badge bg-danger">{{ user.role }}</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ user.role }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Member Since:</th>
+                                <td>{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h5>Session Information</h5>
+                        <table class="table">
+                            <tr>
+                                <th>Session ID:</th>
+                                <td><code>{{ session }}</code></td>
+                            </tr>
+                        </table>
+                        
+                        <h5 class="mt-4">Available Features</h5>
+                        <div class="list-group">
+                            <a href="{{ url_for('search') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-search"></i> Product Search (SQLi vulnerable)
+                            </a>
+                            <a href="{{ url_for('upload') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-upload"></i> File Upload (RCE vulnerable)
+                            </a>
+                            <a href="{{ url_for('ping') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-network-wired"></i> Network Ping (Command Injection)
+                            </a>
+                            <a href="{{ url_for('dns_lookup') }}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-globe"></i> DNS Lookup (Command Injection)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privilege Escalation Hints -->
+        <div class="alert alert-info">
+            <h5><i class="fas fa-user-shield"></i> Privilege Escalation Hints:</h5>
+            <ul class="mb-0">
+                <li>Session data is stored insecurely - can you manipulate <code>session['role']</code>?</li>
+                <li>Admin panel accessible at <a href="{{ url_for('admin') }}" class="alert-link">/admin</a></li>
+                <li>Try modifying cookies in your browser</li>
+                <li>Flask session cookies use <code>SECRET_KEY</code> - can you find it?</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

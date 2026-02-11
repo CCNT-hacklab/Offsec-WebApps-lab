@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}DNS Lookup - BootCamp-Lab{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0"><i class="fas fa-globe"></i> DNS Lookup Utility</h3>
+            </div>
+            <div class="card-body">
+                <!-- Vulnerability Hints -->
+                <div class="alert alert-danger">
+                    <h6><i class="fas fa-skull-crossbones"></i> Another Command Injection Vector:</h6>
+                    <ul class="mb-0 small">
+                        <li>Uses <code>nslookup</code> command with unsanitized input</li>
+                        <li>Same techniques as ping apply here</li>
+                        <li>Try command separators: <code>;</code> <code>&&</code> <code>||</code></li>
+                    </ul>
+                </div>
+
+                <form method="POST" action="{{ url_for('dns_lookup') }}">
+                    <div class="mb-3">
+                        <label for="domain" class="form-label">Domain Name</label>
+                        <input type="text" class="form-control form-control-lg" id="domain" name="domain" placeholder="google.com" required>
+                        <small class="text-muted">Enter domain name for DNS lookup</small>
+                    </div>
+                    <button type="submit" class="btn btn-gradient w-100 btn-lg">
+                        <i class="fas fa-search"></i> Lookup DNS
+                    </button>
+                </form>
+
+                {% if result %}
+                <hr class="my-4">
+                <h5><i class="fas fa-terminal"></i> DNS Lookup Result:</h5>
+                <pre class="bg-dark text-light p-3" style="max-height: 400px; overflow-y: auto;">{{ result }}</pre>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Tips -->
+        <div class="card mt-4">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0"><i class="fas fa-lightbulb"></i> Quick Command Injection Examples</h5>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li><code>google.com && whoami</code> - Get current user</li>
+                    <li><code>google.com; ls -la /</code> - List root directory</li>
+                    <li><code>google.com | ps aux</code> - List running processes</li>
+                    <li><code>google.com; cat /etc/shadow</code> - Try to read shadow file</li>
+                    <li><code>google.com && python3 -m http.server 8000</code> - Start web server</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
