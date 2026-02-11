@@ -91,6 +91,29 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('dns_lookup') }}"><i class="fas fa-globe"></i> DNS</a>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="containerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-box"></i> Container
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="containerDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('container_info') }}"><i class="fas fa-info-circle"></i> Container Info</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('container_escape') }}"><i class="fas fa-door-open"></i> Escape Lab</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="aiDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-brain"></i> AI Attack
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="aiDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('ai_lab') }}"><i class="fas fa-flask"></i> AI Lab Home</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('ai_prompt_injection') }}"><i class="fas fa-comment-dots"></i> Prompt Injection</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('ai_data_poisoning') }}"><i class="fas fa-skull-crossbones"></i> Data Poisoning</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('ai_adversarial') }}"><i class="fas fa-eye-slash"></i> Adversarial Attack</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('ai_model_inversion') }}"><i class="fas fa-undo"></i> Model Inversion</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('ai_model_stealing') }}"><i class="fas fa-copy"></i> Model Stealing</a></li>
+                        </ul>
+                    </li>
                     {% endif %}
                 </ul>
                 <ul class="navbar-nav">

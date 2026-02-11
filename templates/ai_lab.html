@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}AI Attack Lab - VulnShop{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <h3 class="mb-0 text-white"><i class="fas fa-brain"></i> AI Mind Attack Laboratory</h3>
+            </div>
+            <div class="card-body">
+                <p class="lead">
+                    Explore <strong>10 AI exploitation techniques</strong> in this interactive lab based on real-world AI vulnerabilities.
+                </p>
+                
+                <div class="alert alert-info">
+                    <h5><i class="fas fa-info-circle"></i> About This Lab</h5>
+                    <p class="mb-0">
+                        This lab demonstrates AI security vulnerabilities documented in research papers and real-world incidents.
+                        Each technique shows how AI systems can be exploited, manipulated, or abused.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Attack 1: Prompt Injection -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0"><i class="fas fa-comment-dots"></i> 1. Prompt Injection</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Manipulate AI chatbots by injecting malicious prompts to bypass security controls and leak sensitive data.</p>
+                        <p class="text-muted small">
+                            <strong>Target:</strong> LLMs, Chatbots<br>
+                            <strong>Impact:</strong> Data leakage, unauthorized actions
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('ai_prompt_injection') }}" class="btn btn-danger w-100">
+                            <i class="fas fa-flask"></i> Try Attack
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attack 2: Data Poisoning -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="fas fa-skull-crossbones"></i> 2. Data Poisoning</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Inject malicious data into training datasets to corrupt AI model behavior and create backdoors.</p>
+                        <p class="text-muted small">
+                            <strong>Target:</strong> Training pipelines<br>
+                            <strong>Impact:</strong> Model corruption, backdoors
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('ai_data_poisoning') }}" class="btn btn-warning w-100">
+                            <i class="fas fa-flask"></i> Try Attack
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attack 3: Adversarial Attacks -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-eye-slash"></i> 3. Adversarial Attacks</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Add imperceptible noise to inputs to fool AI into making wrong predictions.</p>
+                        <p class="text-muted small">
+                            <strong>Target:</strong> Image classifiers, CNNs<br>
+                            <strong>Impact:</strong> Misclassification
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('ai_adversarial') }}" class="btn btn-primary w-100">
+                            <i class="fas fa-flask"></i> Try Attack
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attack 4: Model Inversion -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-undo"></i> 4. Model Inversion</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Reverse-engineer training data from model outputs, reconstructing sensitive information.</p>
+                        <p class="text-muted small">
+                            <strong>Target:</strong> ML APIs<br>
+                            <strong>Impact:</strong> Privacy breach
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('ai_model_inversion') }}" class="btn btn-info w-100">
+                            <i class="fas fa-flask"></i> Try Attack
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attack 5: Backdoor Attacks -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="fas fa-key"></i> 5. Backdoor Attacks</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Plant hidden triggers in models that activate malicious behavior when specific inputs are detected.</p>
+                        <p class="text-muted small">
+                            <strong>Target:</strong> Neural networks<br>
+                            <strong>Impact:</strong> Hidden malicious behavior
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-dark w-100" onclick="alert('Demo: Trigger pattern detected → Model behavior changed!');">
+                            <i class="fas fa-flask"></i> Try Attack
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attack 6: Model Stealing -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"><i class="fas fa-copy"></i> 6. Model Stealing</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Clone proprietary AI models by querying their APIs and replicating their behavior.</p>
+                        <p class="text-muted small">
+                            <strong>Target:</strong> Commercial APIs<br>
+                            <strong>Impact:</strong> IP theft
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('ai_model_stealing') }}" class="btn btn-secondary w-100">
+                            <i class="fas fa-flask"></i> Try Attack
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attack 7: Overfitting & Bias Amplification -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header" style="background: #e74c3c; color: white;">
+                        <h5 class="mb-0"><i class="fas fa-balance-scale"></i> 7. Bias Amplification</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Exploit overfitting and amplify existing biases in training data to create discriminatory models.</p>
+                        <p class="text-muted small">
+                            <strong>Target:</strong> ML models<br>
+                            <strong>Impact:</strong> Discrimination
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn w-100" style="background: #e74c3c; color: white;" onclick="alert('Demo: Gender bias detected - Male: 27.5% high income, Female: 9.1% high income');">
+                            <i class="fas fa-flask"></i> View Demo
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attack 8: Resource Exhaustion -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header" style="background: #f39c12; color: white;">
+                        <h5 class="mb-0"><i class="fas fa-bomb"></i> 8. Resource Exhaustion</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Overload AI systems with complex queries to exhaust computational resources (AI DoS).</p>
+                        <p class="text-muted small">
+                            <strong>Target:</strong> AI APIs<br>
+                            <strong>Impact:</strong> Service disruption
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn w-100" style="background: #f39c12; color: white;" onclick="alert('Demo: 10,000 complex queries sent → Server CPU: 100%, Response time: 122.55s');">
+                            <i class="fas fa-flask"></i> View Demo
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attack 9: Supply Chain Attacks -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header" style="background: #8e44ad; color: white;">
+                        <h5 class="mb-0"><i class="fas fa-link"></i> 9. Supply Chain</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Compromise AI libraries, pretrained models, or datasets in the supply chain.</p>
+                        <p class="text-muted small">
+                            <strong>Target:</strong> Dependencies, models<br>
+                            <strong>Impact:</strong> Widespread compromise
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn w-100" style="background: #8e44ad; color: white;" onclick="alert('Demo: Malicious PyPI package detected → API keys logged to attacker server');">
+                            <i class="fas fa-flask"></i> View Demo
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attack 10: Human-AI Interaction Exploits -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header" style="background: #16a085; color: white;">
+                        <h5 class="mb-0"><i class="fas fa-users"></i> 10. Human-AI Exploits</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Manipulate human-AI interactions through social engineering and deceptive UI patterns.</p>
+                        <p class="text-muted small">
+                            <strong>Target:</strong> Users, interfaces<br>
+                            <strong>Impact:</strong> Phishing, fraud
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn w-100" style="background: #16a085; color: white;" onclick="alert('Demo: AI deepfake voice detected - Successfully impersonated bank customer service!');">
+                            <i class="fas fa-flask"></i> View Demo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reference -->
+        <div class="card mt-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="fas fa-book"></i> References & Learning Resources</h5>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li><a href="https://medium.com/@mansheman/ai-mind-attack-10-teknik-penyerang-exploitasi-ai-aed003df1952" target="_blank">AI Mind Attack: 10 Teknik Penyerang Exploitasi AI</a></li>
+                    <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" target="_blank">OWASP Top 10 for LLM Applications</a></li>
+                    <li><a href="https://arxiv.org/abs/1312.6199" target="_blank">Intriguing Properties of Neural Networks (Adversarial Examples)</a></li>
+                    <li><a href="https://www.cleverhans.io/" target="_blank">CleverHans: Adversarial Examples Library</a></li>
+                    <li><a href="https://github.com/Trusted-AI/adversarial-robustness-toolbox" target="_blank">Adversarial Robustness Toolbox (ART)</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

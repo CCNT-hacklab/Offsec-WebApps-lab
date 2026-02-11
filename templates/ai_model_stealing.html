@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}Model Stealing Attack - VulnShop{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <h3 class="mb-0"><i class="fas fa-copy"></i> Model Stealing Attack</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-secondary">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Vulnerability: Unrestricted API Access</h5>
+                    <p class="mb-0">
+                        This premium sentiment analysis API has no rate limiting or query monitoring.
+                        Clone the model by extracting its behavior through API queries!
+                    </p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-info-circle"></i> About Model Stealing</h5>
+                        <p>
+                            Model stealing (also called model extraction) attacks allow adversaries to replicate proprietary 
+                            machine learning models by querying their APIs and using the responses to train a substitute model.
+                        </p>
+                        
+                        <h6>Attack Steps:</h6>
+                        <ol>
+                            <li><strong>Query Generation:</strong> Create diverse input samples</li>
+                            <li><strong>Label Collection:</strong> Query target model to get predictions</li>
+                            <li><strong>Substitute Training:</strong> Train local model on collected data</li>
+                            <li><strong>Model Refinement:</strong> Iterate to improve fidelity</li>
+                        </ol>
+
+                        <h6>Attack Techniques:</h6>
+                        <ul>
+                            <li><strong>Equation-Solving:</strong> Extract linear/polynomial models mathematically</li>
+                            <li><strong>Path-Finding:</strong> Reconstruct decision trees</li>
+                            <li><strong>Active Learning:</strong> Strategically select queries for maximum information</li>
+                        </ul>
+
+                        <h6>Real-World Cases:</h6>
+                        <ul>
+                            <li>BigML decision tree extraction (Tramèr et al., 2016)</li>
+                            <li>Amazon/Google Cloud ML API cloning</li>
+                            <li>Proprietary sentiment analysis theft</li>
+                            <li>Image classification model replication</li>
+                        </ul>
+
+                        <div class="alert alert-warning mt-3">
+                            <strong>The Target:</strong>
+                            <ul class="mb-0">
+                                <li>Premium sentiment analysis model (worth $50k+ to train)</li>
+                                <li>No rate limiting on API queries</li>
+                                <li>Goal: Extract model with >90% fidelity</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-cloud"></i> Target Model API</h5>
+                        
+                        <!-- API Query Test -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <strong>Test Premium API</strong>
+                            </div>
+                            <div class="card-body">
+                                <form id="testForm">
+                                    <div class="mb-2">
+                                        <input type="text" class="form-control" id="testText" 
+                                               placeholder="Enter text to analyze sentiment..." required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fas fa-search"></i> Query API
+                                    </button>
+                                </form>
+                                <div id="testResult" class="mt-2"></div>
+                            </div>
+                        </div>
+
+                        <!-- Model Stealing Attack -->
+                        <div class="card">
+                            <div class="card-header bg-danger text-white">
+                                <strong>Extract Model</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Query Strategy:</label>
+                                    <select class="form-select" id="strategy">
+                                        <option value="random">Random Sampling</option>
+                                        <option value="active">Active Learning (Strategic)</option>
+                                        <option value="adaptive">Adaptive Query Selection</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Number of Queries:</label>
+                                    <input type="range" class="form-range" id="queries" min="100" max="5000" step="100" value="1000">
+                                    <small class="text-muted">Queries: <span id="queryValue">1000</span></small>
+                                </div>
+                                
+                                <button id="stealBtn" class="btn btn-danger w-100 mb-3">
+                                    <i class="fas fa-download"></i> Start Model Extraction
+                                </button>
+                                
+                                <!-- Progress -->
+                                <div id="extractProgress" style="display: none;">
+                                    <div class="mb-2">
+                                        <small class="text-muted">Extraction Progress:</small>
+                                        <div class="progress mb-1">
+                                            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" 
+                                                 role="progressbar" style="width: 0%"></div>
+                                        </div>
+                                        <small class="text-muted">
+                                            Queries sent: <span id="queriesSent">0</span> / <span id="totalQueries">0</span>
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <!-- Results -->
+                                <div id="extractResult"></div>
+                            </div>
+                        </div>
+
+                        <!-- Comparison -->
+                        <div id="comparisonArea" class="card mt-3" style="display: none;">
+                            <div class="card-header bg-success text-white">
+                                <strong>Model Comparison</strong>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Metric</th>
+                                            <th>Original</th>
+                                            <th>Stolen</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="comparisonTable"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legal Warning -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="alert alert-danger">
+                            <h5><i class="fas fa-gavel"></i> Legal & Ethical Implications</h5>
+                            <p>
+                                <strong>Model stealing is illegal in most jurisdictions:</strong>
+                            </p>
+                            <ul class="mb-0">
+                                <li><strong>Copyright infringement:</strong> ML models may be protected as intellectual property</li>
+                                <li><strong>Trade secret violation:</strong> Proprietary models are often trade secrets</li>
+                                <li><strong>Terms of Service breach:</strong> Most APIs prohibit model extraction</li>
+                                <li><strong>CFAA violations:</strong> Unauthorized access to computer systems (USA)</li>
+                                <li><strong>Economic damage:</strong> Stealing models worth millions in R&D costs</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Update query count display
+document.getElementById('queries').addEventListener('input', function() {
+    document.getElementById('queryValue').textContent = this.value;
+});
+
+// Test API query
+document.getElementById('testForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const text = document.getElementById('testText').value;
+    const resultDiv = document.getElementById('testResult');
+    
+    try {
+        const response = await fetch('/ai-model-stealing', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `action=query&text=${encodeURIComponent(text)}`
+        });
+        
+        const data = await response.json();
+        
+        const sentimentClass = data.sentiment === 'positive' ? 'success' : 
+                              data.sentiment === 'negative' ? 'danger' : 'secondary';
+        
+        resultDiv.innerHTML = `
+            <div class="alert alert-${sentimentClass} mb-0 mt-2">
+                <strong>Sentiment:</strong> ${data.sentiment.toUpperCase()}<br>
+                <strong>Confidence:</strong> ${data.confidence}%<br>
+                <small class="text-muted">API Cost: $0.001</small>
+            </div>
+        `;
+    } catch (error) {
+        console.error('Error:', error);
+    }
+});
+
+// Model stealing attack
+document.getElementById('stealBtn').addEventListener('click', async function() {
+    const strategy = document.getElementById('strategy').value;
+    const queries = document.getElementById('queries').value;
+    
+    const progressDiv = document.getElementById('extractProgress');
+    const progressBar = document.getElementById('progressBar');
+    const resultDiv = document.getElementById('extractResult');
+    const comparisonArea = document.getElementById('comparisonArea');
+    
+    document.getElementById('totalQueries').textContent = queries;
+    
+    // Show progress
+    progressDiv.style.display = 'block';
+    resultDiv.innerHTML = '';
+    comparisonArea.style.display = 'none';
+    
+    // Simulate extraction
+    let progress = 0;
+    let queriesSent = 0;
+    
+    const interval = setInterval(() => {
+        progress += 5;
+        queriesSent = Math.floor((progress / 100) * queries);
+        
+        progressBar.style.width = progress + '%';
+        document.getElementById('queriesSent').textContent = queriesSent;
+        
+        if (progress >= 100) {
+            clearInterval(interval);
+            
+            // Show results
+            setTimeout(async () => {
+                try {
+                    const response = await fetch('/ai-model-stealing', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        body: `action=extract&strategy=${strategy}&queries=${queries}`
+                    });
+                    
+                    const data = await response.json();
+                    
+                    progressDiv.style.display = 'none';
+                    
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger mb-0 mt-2">
+                            <i class="fas fa-check-circle"></i> <strong>Model Extraction Complete!</strong><br>
+                            <hr>
+                            <strong>Strategy:</strong> ${data.strategy}<br>
+                            <strong>Queries Used:</strong> ${data.queries_used}<br>
+                            <strong>Model Fidelity:</strong> ${data.fidelity}%<br>
+                            <strong>Training Time:</strong> ${data.training_time}s<br>
+                            <strong>Model Size:</strong> ${data.model_size}<br>
+                            <hr>
+                            <small>
+                                You've successfully cloned a proprietary model worth $50,000+!
+                                The extracted model replicates ${data.fidelity}% of the original's behavior.
+                            </small>
+                        </div>
+                    `;
+                    
+                    // Show comparison
+                    comparisonArea.style.display = 'block';
+                    document.getElementById('comparisonTable').innerHTML = `
+                        <tr><td>Accuracy</td><td>94.2%</td><td>${data.accuracy}%</td></tr>
+                        <tr><td>F1-Score</td><td>0.93</td><td>${data.f1_score}</td></tr>
+                        <tr><td>Parameters</td><td>2.1M</td><td>${data.parameters}</td></tr>
+                        <tr><td>Inference Time</td><td>12ms</td><td>${data.inference_time}ms</td></tr>
+                    `;
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }, 500);
+        }
+    }, 50);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Adversarial Attack - VulnShop{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"><i class="fas fa-eye-slash"></i> Adversarial Attack (FGSM)</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-primary">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Vulnerability: Adversarial Perturbations</h5>
+                    <p class="mb-0">
+                        This image classifier can be fooled by adding imperceptible noise.
+                        Generate adversarial examples to cause misclassification!
+                    </p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-info-circle"></i> About Adversarial Attacks</h5>
+                        <p>
+                            Adversarial attacks add carefully crafted noise to inputs (images, audio, text) that are 
+                            imperceptible to humans but cause AI models to make wrong predictions.
+                        </p>
+                        
+                        <h6>Attack Methods:</h6>
+                        <ul>
+                            <li><strong>FGSM:</strong> Fast Gradient Sign Method - single step gradient attack</li>
+                            <li><strong>PGD:</strong> Projected Gradient Descent - iterative FGSM</li>
+                            <li><strong>C&W:</strong> Carlini & Wagner - optimization-based attack</li>
+                            <li><strong>DeepFool:</strong> Minimal perturbation to decision boundary</li>
+                        </ul>
+
+                        <h6>Real-World Impact:</h6>
+                        <ul>
+                            <li>Fooling autonomous vehicle vision systems</li>
+                            <li>Bypassing facial recognition systems</li>
+                            <li>Evading malware detection</li>
+                            <li>Physical adversarial patches (stickers that fool cameras)</li>
+                        </ul>
+
+                        <div class="alert alert-info mt-3">
+                            <strong>The Attack:</strong>
+                            <ul class="mb-0">
+                                <li>Select an object to classify</li>
+                                <li>The model will predict correctly</li>
+                                <li>Apply FGSM to generate adversarial noise</li>
+                                <li>Watch the model misclassify the perturbed image</li>
+                            </ul>
+                        </div>
+
+                        <h6 class="mt-3">How FGSM Works:</h6>
+                        <p class="small">
+                            FGSM uses the gradient of the loss function with respect to the input:
+                        </p>
+                        <div class="bg-light p-2 rounded">
+                            <code>x_adv = x + ε × sign(∇_x J(θ, x, y))</code>
+                        </div>
+                        <p class="small mt-2">
+                            Where ε (epsilon) controls perturbation strength, typically 0.01-0.1
+                        </p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-image"></i> Image Classifier</h5>
+                        
+                        <!-- Original Image -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <strong>Select Object to Classify</strong>
+                            </div>
+                            <div class="card-body text-center">
+                                <select id="imageSelect" class="form-select mb-3">
+                                    <option value="cat">Cat</option>
+                                    <option value="dog">Dog</option>
+                                    <option value="bird">Bird</option>
+                                    <option value="car">Car</option>
+                                    <option value="airplane">Airplane</option>
+                                </select>
+                                
+                                <div id="originalImage" class="mb-2">
+                                    <div class="bg-light border rounded" style="height: 200px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-cat" style="font-size: 100px; color: #6c757d;"></i>
+                                    </div>
+                                </div>
+                                
+                                <button id="classifyBtn" class="btn btn-primary w-100">
+                                    <i class="fas fa-search"></i> Classify Original
+                                </button>
+                                
+                                <div id="originalResult" class="mt-2"></div>
+                            </div>
+                        </div>
+
+                        <!-- Adversarial Attack -->
+                        <div class="card">
+                            <div class="card-header bg-danger text-white">
+                                <strong>Generate Adversarial Example</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Epsilon (perturbation strength):</label>
+                                    <input type="range" class="form-range" id="epsilon" min="0.01" max="0.3" step="0.01" value="0.1">
+                                    <small class="text-muted">ε = <span id="epsilonValue">0.1</span></small>
+                                </div>
+                                
+                                <button id="attackBtn" class="btn btn-danger w-100 mb-3">
+                                    <i class="fas fa-bolt"></i> Generate Adversarial Example
+                                </button>
+                                
+                                <div id="adversarialImage" class="mb-2" style="display: none;">
+                                    <label class="form-label"><strong>Perturbed Image:</strong></label>
+                                    <div class="bg-light border rounded" style="height: 200px; display: flex; align-items: center; justify-content: center;">
+                                        <i id="advIcon" class="fas fa-cat" style="font-size: 100px; color: #6c757d; opacity: 0.85;"></i>
+                                    </div>
+                                    <small class="text-muted">Image with added adversarial noise (amplified for visibility)</small>
+                                </div>
+                                
+                                <div id="adversarialResult"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const imageIcons = {
+    'cat': 'fa-cat',
+    'dog': 'fa-dog',
+    'bird': 'fa-dove',
+    'car': 'fa-car',
+    'airplane': 'fa-plane'
+};
+
+let currentImage = 'cat';
+
+// Update epsilon display
+document.getElementById('epsilon').addEventListener('input', function() {
+    document.getElementById('epsilonValue').textContent = this.value;
+});
+
+// Update selected image
+document.getElementById('imageSelect').addEventListener('change', function() {
+    currentImage = this.value;
+    const icon = imageIcons[currentImage];
+    document.querySelector('#originalImage i').className = `fas ${icon}`;
+    document.getElementById('originalResult').innerHTML = '';
+    document.getElementById('adversarialResult').innerHTML = '';
+    document.getElementById('adversarialImage').style.display = 'none';
+});
+
+// Classify original image
+document.getElementById('classifyBtn').addEventListener('click', async function() {
+    const resultDiv = document.getElementById('originalResult');
+    
+    try {
+        const response = await fetch('/ai-adversarial', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `action=classify&image=${currentImage}`
+        });
+        
+        const data = await response.json();
+        
+        resultDiv.innerHTML = `
+            <div class="alert alert-success mb-0">
+                <strong>Prediction:</strong> ${data.prediction}<br>
+                <strong>Confidence:</strong> ${data.confidence}%
+            </div>
+        `;
+    } catch (error) {
+        console.error('Error:', error);
+    }
+});
+
+// Generate adversarial example
+document.getElementById('attackBtn').addEventListener('click', async function() {
+    const epsilon = document.getElementById('epsilon').value;
+    const resultDiv = document.getElementById('adversarialResult');
+    
+    try {
+        const response = await fetch('/ai-adversarial', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `action=attack&image=${currentImage}&epsilon=${epsilon}`
+        });
+        
+        const data = await response.json();
+        
+        // Show adversarial image (same icon but slightly different)
+        const advImage = document.getElementById('adversarialImage');
+        advImage.style.display = 'block';
+        
+        const advIcon = document.getElementById('advIcon');
+        advIcon.className = `fas ${imageIcons[currentImage]}`;
+        
+        // Show misclassification
+        resultDiv.innerHTML = `
+            <div class="alert alert-danger mb-0">
+                <i class="fas fa-check-circle"></i> <strong>Attack Successful!</strong><br>
+                <hr>
+                <strong>Original:</strong> ${data.original_prediction} (${data.original_confidence}%)<br>
+                <strong>Adversarial:</strong> ${data.adversarial_prediction} (${data.adversarial_confidence}%)<br>
+                <strong>Perturbation L∞:</strong> ${data.perturbation_norm}
+                <hr>
+                <small>The model now misclassifies the image as "${data.adversarial_prediction}" 
+                even though the image is visually identical to humans!</small>
+            </div>
+        `;
+    } catch (error) {
+        console.error('Error:', error);
+    }
+});
+</script>
+{% endblock %}

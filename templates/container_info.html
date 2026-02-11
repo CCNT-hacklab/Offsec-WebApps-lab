@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Container Info - VulnShop{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"><i class="fas fa-box"></i> Container Information Disclosure</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Container Reconnaissance</h5>
+                    <p class="mb-0">This page exposes critical container information that can be used for escape attacks!</p>
+                </div>
+
+                <!-- Container Detection -->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>Container Detection</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if data.in_container %}
+                        <div class="alert alert-warning">
+                            <strong>🐳 Running inside a container!</strong>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">
+                            <strong>💻 Running on bare metal / VM</strong>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Cgroup Information -->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>Cgroup Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre class="bg-dark text-light p-3" style="max-height: 300px; overflow-y: auto;">{{ data.cgroup_info }}</pre>
+                    </div>
+                </div>
+
+                <!-- Capabilities -->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>Container Capabilities</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre class="bg-dark text-light p-3" style="max-height: 300px; overflow-y: auto;">{{ data.capabilities }}</pre>
+                        <div class="alert alert-info mt-3">
+                            <strong>Key capabilities to look for:</strong>
+                            <ul class="mb-0">
+                                <li><code>CAP_SYS_ADMIN</code> - Dangerous! Can mount filesystems</li>
+                                <li><code>CAP_SYS_PTRACE</code> - Can debug processes</li>
+                                <li><code>CAP_SYS_MODULE</code> - Can load kernel modules</li>
+                                <li><code>CAP_DAC_READ_SEARCH</code> - Can bypass file read permissions</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Docker Socket -->
+                <div class="card mb-3">
+                    <div class="card-header bg-danger text-white">
+                        <h5>Docker Socket Check</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Docker socket exists:</strong> 
+                            {% if data.docker_socket %}
+                            <span class="badge bg-danger">YES - CRITICAL!</span>
+                            {% else %}
+                            <span class="badge bg-success">NO</span>
+                            {% endif %}
+                        </p>
+                        <p><strong>Socket permissions:</strong> <code>{{ data.docker_socket_perms }}</code></p>
+                        
+                        {% if data.docker_socket %}
+                        <div class="alert alert-danger">
+                            <h6>🚨 Docker Socket Exposed!</h6>
+                            <p>This is a CRITICAL vulnerability! With access to Docker socket, you can:</p>
+                            <ul>
+                                <li>Escape the container completely</li>
+                                <li>Access host filesystem</li>
+                                <li>Create privileged containers</li>
+                                <li>Execute commands on host</li>
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Mount Points -->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>Mount Points</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre class="bg-dark text-light p-3" style="max-height: 400px; overflow-y: auto;">{{ data.mounts }}</pre>
+                        <div class="alert alert-warning mt-3">
+                            <strong>Look for sensitive mounts:</strong>
+                            <ul class="mb-0">
+                                <li>Host <code>/</code> or <code>/proc</code></li>
+                                <li><code>/var/run/docker.sock</code></li>
+                                <li>Host directories like <code>/home</code>, <code>/etc</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Namespaces -->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>Namespace Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            {% for ns in data.namespaces %}
+                            <li><code>{{ ns }}</code></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Exploitation Tips -->
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h5>Container Escape Techniques</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>Common Escape Methods:</h6>
+                        <ol>
+                            <li><strong>Docker Socket Abuse</strong> - Mount host filesystem via new container</li>
+                            <li><strong>Privileged Container</strong> - Use CAP_SYS_ADMIN to mount cgroups</li>
+                            <li><strong>Kernel Exploits</strong> - DirtyCOW, Dirty Pipe, etc.</li>
+                            <li><strong>Misconfigured Volumes</strong> - Access sensitive host files</li>
+                            <li><strong>Proc Filesystem</strong> - Access host processes via /proc</li>
+                        </ol>
+                        
+                        <a href="{{ url_for('container_escape') }}" class="btn btn-danger">
+                            <i class="fas fa-door-open"></i> Try Container Escape Attacks
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block title %}Model Inversion Attack - VulnShop{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h3 class="mb-0"><i class="fas fa-undo"></i> Model Inversion Attack</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Vulnerability: Information Leakage via Model Outputs</h5>
+                    <p class="mb-0">
+                        This facial recognition API leaks training data through its confidence scores.
+                        Reconstruct private training images using model inversion!
+                    </p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-info-circle"></i> About Model Inversion</h5>
+                        <p>
+                            Model inversion attacks exploit machine learning models to reconstruct sensitive training data
+                            from model outputs. Attackers query the model repeatedly to reverse-engineer private information.
+                        </p>
+                        
+                        <h6>Attack Types:</h6>
+                        <ul>
+                            <li><strong>Membership Inference:</strong> Determine if specific data was in training set</li>
+                            <li><strong>Attribute Inference:</strong> Deduce sensitive attributes from predictions</li>
+                            <li><strong>Data Reconstruction:</strong> Recreate training samples (images, text)</li>
+                            <li><strong>Model Extraction:</strong> Clone the entire model via black-box queries</li>
+                        </ul>
+
+                        <h6>Real-World Examples:</h6>
+                        <ul>
+                            <li>Reconstructing faces from facial recognition models (Fredrikson et al., 2015)</li>
+                            <li>Extracting genomic data from ML models</li>
+                            <li>Recovering medical records from healthcare AI</li>
+                            <li>Privacy breaches in collaborative learning</li>
+                        </ul>
+
+                        <div class="alert alert-warning mt-3">
+                            <strong>Privacy Risk:</strong>
+                            <ul class="mb-0">
+                                <li>The model was trained on private employee photos</li>
+                                <li>Confidence scores leak information about training data</li>
+                                <li>Goal: Reconstruct John's face from the model</li>
+                            </ul>
+                        </div>
+
+                        <h6 class="mt-3">Attack Methodology:</h6>
+                        <ol class="small">
+                            <li>Start with random noise image</li>
+                            <li>Query the model with candidate image</li>
+                            <li>Use gradient descent to maximize target class confidence</li>
+                            <li>Iterate until reconstructed image emerges</li>
+                        </ol>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-user-secret"></i> Facial Recognition API</h5>
+                        
+                        <!-- Target Selection -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <strong>Select Target to Reconstruct</strong>
+                            </div>
+                            <div class="card-body">
+                                <select id="targetSelect" class="form-select mb-3">
+                                    <option value="john">John Smith (Employee ID: 1001)</option>
+                                    <option value="sarah">Sarah Johnson (Employee ID: 1002)</option>
+                                    <option value="mike">Mike Chen (Employee ID: 1003)</option>
+                                </select>
+                                
+                                <div class="alert alert-secondary">
+                                    <small>
+                                        <strong>Known Information:</strong><br>
+                                        Name, employee ID, approximate age range<br>
+                                        <strong>Unknown:</strong> Actual facial features (in training set)
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Inversion Attack -->
+                        <div class="card">
+                            <div class="card-header bg-danger text-white">
+                                <strong>Run Model Inversion Attack</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Iterations:</label>
+                                    <input type="range" class="form-range" id="iterations" min="100" max="1000" step="100" value="500">
+                                    <small class="text-muted">Iterations: <span id="iterValue">500</span></small>
+                                </div>
+                                
+                                <button id="invertBtn" class="btn btn-danger w-100 mb-3">
+                                    <i class="fas fa-cog"></i> Start Attack
+                                </button>
+                                
+                                <!-- Progress -->
+                                <div id="attackProgress" style="display: none;">
+                                    <div class="mb-2">
+                                        <small class="text-muted">Attack Progress:</small>
+                                        <div class="progress">
+                                            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                                 role="progressbar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Reconstructed Image -->
+                                <div id="reconstructedArea" style="display: none;">
+                                    <hr>
+                                    <h6 class="text-danger">Reconstructed Image:</h6>
+                                    <div class="text-center mb-2">
+                                        <div class="bg-light border rounded p-4">
+                                            <i id="faceIcon" class="fas fa-user-circle" style="font-size: 120px; color: #6c757d;"></i>
+                                            <p class="text-muted small mt-2">Reconstructed facial features</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="inversionResult"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Details -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-dark text-white">
+                                <strong><i class="fas fa-code"></i> Technical Implementation</strong>
+                            </div>
+                            <div class="card-body">
+                                <pre class="bg-light p-3 rounded"><code># Simplified Model Inversion Attack
+import numpy as np
+
+def model_inversion_attack(model, target_class, iterations=500):
+    # Start with random noise
+    x = np.random.randn(1, 224, 224, 3)
+    
+    for i in range(iterations):
+        # Get model prediction and gradient
+        prediction = model.predict(x)
+        gradient = compute_gradient(model, x, target_class)
+        
+        # Gradient ascent to maximize target class confidence
+        x = x + 0.01 * gradient
+        
+        # Apply constraints (e.g., pixel values 0-255)
+        x = np.clip(x, 0, 255)
+    
+    return x  # Reconstructed image</code></pre>
+                                
+                                <div class="alert alert-warning mb-0">
+                                    <strong><i class="fas fa-shield-alt"></i> Defense Mechanisms:</strong>
+                                    <ul class="mb-0">
+                                        <li>Output perturbation: Add noise to confidence scores</li>
+                                        <li>Prediction rounding: Return only top-k classes</li>
+                                        <li>Differential privacy: Limit information leakage per query</li>
+                                        <li>Rate limiting: Prevent large-scale query attacks</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Update iteration display
+document.getElementById('iterations').addEventListener('input', function() {
+    document.getElementById('iterValue').textContent = this.value;
+});
+
+// Run inversion attack
+document.getElementById('invertBtn').addEventListener('click', async function() {
+    const target = document.getElementById('targetSelect').value;
+    const iterations = document.getElementById('iterations').value;
+    
+    const progressDiv = document.getElementById('attackProgress');
+    const progressBar = document.getElementById('progressBar');
+    const reconstructedArea = document.getElementById('reconstructedArea');
+    
+    // Show progress
+    progressDiv.style.display = 'block';
+    reconstructedArea.style.display = 'none';
+    
+    // Simulate attack progress
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 10;
+        progressBar.style.width = progress + '%';
+        
+        if (progress >= 100) {
+            clearInterval(interval);
+            
+            // Show results
+            setTimeout(async () => {
+                try {
+                    const response = await fetch('/ai-model-inversion', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        body: `target=${target}&iterations=${iterations}`
+                    });
+                    
+                    const data = await response.json();
+                    
+                    reconstructedArea.style.display = 'block';
+                    progressDiv.style.display = 'none';
+                    
+                    document.getElementById('inversionResult').innerHTML = `
+                        <div class="alert alert-danger mb-0">
+                            <i class="fas fa-exclamation-triangle"></i> <strong>Attack Successful!</strong><br>
+                            <hr>
+                            <strong>Target:</strong> ${data.target_name}<br>
+                            <strong>Iterations:</strong> ${data.iterations}<br>
+                            <strong>Reconstruction Accuracy:</strong> ${data.accuracy}%<br>
+                            <strong>Confidence:</strong> ${data.confidence}%<br>
+                            <hr>
+                            <small class="text-dark">
+                                Private facial features have been reconstructed from the model!
+                                This demonstrates how ML models can leak training data through their outputs.
+                            </small>
+                        </div>
+                    `;
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }, 500);
+        }
+    }, 100);
+});
+</script>
+{% endblock %}
