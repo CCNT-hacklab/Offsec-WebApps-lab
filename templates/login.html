@@ -7,12 +7,12 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-header">
-                <h3 class="mb-0"><i class="fas fa-sign-in-alt"></i> Login</h3>
+                <h3 class="mb-0">Login</h3>
             </div>
             <div class="card-body">
                 <!-- Vulnerability Hint -->
                 <div class="alert alert-danger">
-                    <h6><i class="fas fa-skull-crossbones"></i> Vulnerability Hints:</h6>
+                    <h6>Vulnerability Hints:</h6>
                     <ul class="mb-0 small">
                         <li><strong>SQL Injection:</strong> Try: <code>admin' OR '1'='1' --</code></li>
                         <li><strong>Bypass Authentication:</strong> Username: <code>admin' --</code></li>
@@ -33,7 +33,7 @@
                         <small class="text-muted">Stored in plain text!</small>
                     </div>
                     <button type="submit" class="btn btn-gradient w-100">
-                        <i class="fas fa-sign-in-alt"></i> Login
+                        Login
                     </button>
                 </form>
 
@@ -42,14 +42,14 @@
                 <div class="text-center">
                     <p class="mb-2">Don't have an account?</p>
                     <a href="{{ url_for('register') }}" class="btn btn-outline-secondary">
-                        <i class="fas fa-user-plus"></i> Register Now
+                        Register Now
                     </a>
                 </div>
 
                 <!-- Default Credentials Card -->
                 <div class="card bg-light mt-3">
                     <div class="card-body">
-                        <h6 class="card-title"><i class="fas fa-key"></i> Default Credentials</h6>
+                        <h6 class="card-title">Default Credentials</h6>
                         <p class="card-text small mb-0">
                             <strong>Admin:</strong> admin / admin123<br>
                             <strong>User:</strong> john / password123

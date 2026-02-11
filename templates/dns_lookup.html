@@ -7,12 +7,12 @@
     <div class="col-md-8 mx-auto">
         <div class="card">
             <div class="card-header">
-                <h3 class="mb-0"><i class="fas fa-globe"></i> DNS Lookup Utility</h3>
+                <h3 class="mb-0">DNS Lookup Utility</h3>
             </div>
             <div class="card-body">
                 <!-- Vulnerability Hints -->
                 <div class="alert alert-danger">
-                    <h6><i class="fas fa-skull-crossbones"></i> Another Command Injection Vector:</h6>
+                    <h6>Another Command Injection Vector:</h6>
                     <ul class="mb-0 small">
                         <li>Uses <code>nslookup</code> command with unsanitized input</li>
                         <li>Same techniques as ping apply here</li>
@@ -27,13 +27,13 @@
                         <small class="text-muted">Enter domain name for DNS lookup</small>
                     </div>
                     <button type="submit" class="btn btn-gradient w-100 btn-lg">
-                        <i class="fas fa-search"></i> Lookup DNS
+                        Lookup DNS
                     </button>
                 </form>
 
                 {% if result %}
                 <hr class="my-4">
-                <h5><i class="fas fa-terminal"></i> DNS Lookup Result:</h5>
+                <h5>DNS Lookup Result:</h5>
                 <pre class="bg-dark text-light p-3" style="max-height: 400px; overflow-y: auto;">{{ result }}</pre>
                 {% endif %}
             </div>
@@ -42,7 +42,7 @@
         <!-- Quick Tips -->
         <div class="card mt-4">
             <div class="card-header bg-warning">
-                <h5 class="mb-0"><i class="fas fa-lightbulb"></i> Quick Command Injection Examples</h5>
+                <h5 class="mb-0">Quick Command Injection Examples</h5>
             </div>
             <div class="card-body">
                 <ul class="mb-0">

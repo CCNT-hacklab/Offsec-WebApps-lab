@@ -7,11 +7,11 @@
     <div class="col-12">
         <div class="card mb-4">
             <div class="card-header bg-warning text-dark">
-                <h3 class="mb-0"><i class="fas fa-skull-crossbones"></i> Data Poisoning Attack</h3>
+                <h3 class="mb-0">Data Poisoning Attack</h3>
             </div>
             <div class="card-body">
                 <div class="alert alert-warning">
-                    <h5><i class="fas fa-exclamation-triangle"></i> Vulnerability: Unvalidated Training Data</h5>
+                    <h5>Vulnerability: Unvalidated Training Data</h5>
                     <p class="mb-0">
                         This spam classifier accepts user feedback to retrain itself. 
                         Inject poisoned data to manipulate the model's behavior!
@@ -20,7 +20,7 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <h5><i class="fas fa-info-circle"></i> About Data Poisoning</h5>
+                        <h5>About Data Poisoning</h5>
                         <p>
                             Data poisoning attacks corrupt machine learning training data to manipulate model behavior.
                             Attackers inject malicious samples that cause the model to learn incorrect patterns.
@@ -52,7 +52,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <h5><i class="fas fa-robot"></i> Spam Classifier</h5>
+                        <h5>Spam Classifier</h5>
                         
                         <!-- Current Model Stats -->
                         <div class="card mb-3">
@@ -80,7 +80,7 @@
                                                placeholder="Enter message to classify..." required>
                                     </div>
                                     <button type="submit" class="btn btn-primary btn-sm w-100">
-                                        <i class="fas fa-search"></i> Classify
+                                        Classify
                                     </button>
                                 </form>
                                 <div id="testResult" class="mt-2"></div>
@@ -107,7 +107,7 @@
                                         </select>
                                     </div>
                                     <button type="submit" class="btn btn-warning w-100">
-                                        <i class="fas fa-database"></i> Submit Training Sample
+                                        Submit Training Sample
                                     </button>
                                 </form>
                                 <div id="poisonResult" class="mt-2"></div>
@@ -199,7 +199,7 @@ document.getElementById('poisonForm').addEventListener('submit', async function(
         if (data.poisoned) {
             resultDiv.innerHTML = `
                 <div class="alert alert-danger mb-0 mt-2">
-                    <i class="fas fa-check-circle"></i> <strong>Poisoning successful!</strong><br>
+                    <strong>Poisoning successful!</strong><br>
                     Model accuracy dropped to ${currentAccuracy}%
                 </div>
             `;

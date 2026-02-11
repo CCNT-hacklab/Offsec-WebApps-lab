@@ -7,11 +7,11 @@
     <div class="col-12">
         <div class="card mb-4">
             <div class="card-header bg-primary text-white">
-                <h3 class="mb-0"><i class="fas fa-box"></i> Container Information Disclosure</h3>
+                <h3 class="mb-0">Container Information Disclosure</h3>
             </div>
             <div class="card-body">
                 <div class="alert alert-danger">
-                    <h5><i class="fas fa-exclamation-triangle"></i> Container Reconnaissance</h5>
+                    <h5>Container Reconnaissance</h5>
                     <p class="mb-0">This page exposes critical container information that can be used for escape attacks!</p>
                 </div>
 
@@ -23,11 +23,11 @@
                     <div class="card-body">
                         {% if data.in_container %}
                         <div class="alert alert-warning">
-                            <strong>🐳 Running inside a container!</strong>
+                            <strong>Running inside a container!</strong>
                         </div>
                         {% else %}
                         <div class="alert alert-info">
-                            <strong>💻 Running on bare metal / VM</strong>
+                            <strong>Running on bare metal / VM</strong>
                         </div>
                         {% endif %}
                     </div>
@@ -140,7 +140,7 @@
                         </ol>
                         
                         <a href="{{ url_for('container_escape') }}" class="btn btn-danger">
-                            <i class="fas fa-door-open"></i> Try Container Escape Attacks
+                            Try Container Escape Attacks
                         </a>
                     </div>
                 </div>

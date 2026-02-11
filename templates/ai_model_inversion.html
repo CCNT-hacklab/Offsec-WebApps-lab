@@ -7,11 +7,11 @@
     <div class="col-12">
         <div class="card mb-4">
             <div class="card-header bg-info text-white">
-                <h3 class="mb-0"><i class="fas fa-undo"></i> Model Inversion Attack</h3>
+                <h3 class="mb-0">Model Inversion Attack</h3>
             </div>
             <div class="card-body">
                 <div class="alert alert-info">
-                    <h5><i class="fas fa-exclamation-triangle"></i> Vulnerability: Information Leakage via Model Outputs</h5>
+                    <h5>Vulnerability: Information Leakage via Model Outputs</h5>
                     <p class="mb-0">
                         This facial recognition API leaks training data through its confidence scores.
                         Reconstruct private training images using model inversion!
@@ -20,7 +20,7 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <h5><i class="fas fa-info-circle"></i> About Model Inversion</h5>
+                        <h5>About Model Inversion</h5>
                         <p>
                             Model inversion attacks exploit machine learning models to reconstruct sensitive training data
                             from model outputs. Attackers query the model repeatedly to reverse-engineer private information.
@@ -61,7 +61,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <h5><i class="fas fa-user-secret"></i> Facial Recognition API</h5>
+                        <h5>Facial Recognition API</h5>
                         
                         <!-- Target Selection -->
                         <div class="card mb-3">
@@ -98,7 +98,7 @@
                                 </div>
                                 
                                 <button id="invertBtn" class="btn btn-danger w-100 mb-3">
-                                    <i class="fas fa-cog"></i> Start Attack
+                                    Start Attack
                                 </button>
                                 
                                 <!-- Progress -->
@@ -135,7 +135,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header bg-dark text-white">
-                                <strong><i class="fas fa-code"></i> Technical Implementation</strong>
+                                <strong>Technical Implementation</strong>
                             </div>
                             <div class="card-body">
                                 <pre class="bg-light p-3 rounded"><code># Simplified Model Inversion Attack
@@ -159,7 +159,7 @@ def model_inversion_attack(model, target_class, iterations=500):
     return x  # Reconstructed image</code></pre>
                                 
                                 <div class="alert alert-warning mb-0">
-                                    <strong><i class="fas fa-shield-alt"></i> Defense Mechanisms:</strong>
+                                    <strong>Defense Mechanisms:</strong>
                                     <ul class="mb-0">
                                         <li>Output perturbation: Add noise to confidence scores</li>
                                         <li>Prediction rounding: Return only top-k classes</li>
@@ -220,7 +220,7 @@ document.getElementById('invertBtn').addEventListener('click', async function() 
                     
                     document.getElementById('inversionResult').innerHTML = `
                         <div class="alert alert-danger mb-0">
-                            <i class="fas fa-exclamation-triangle"></i> <strong>Attack Successful!</strong><br>
+                            <strong>Attack Successful!</strong><br>
                             <hr>
                             <strong>Target:</strong> ${data.target_name}<br>
                             <strong>Iterations:</strong> ${data.iterations}<br>

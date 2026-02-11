@@ -7,7 +7,7 @@
     <div class="col-12">
         <div class="card mb-4">
             <div class="card-header">
-                <h3 class="mb-0"><i class="fas fa-tachometer-alt"></i> User Dashboard</h3>
+                <h3 class="mb-0">User Dashboard</h3>
             </div>
             <div class="card-body">
                 <h4>Welcome, {{ user.username }}!</h4>
@@ -81,7 +81,7 @@
 
         <!-- Privilege Escalation Hints -->
         <div class="alert alert-info">
-            <h5><i class="fas fa-user-shield"></i> Privilege Escalation Hints:</h5>
+            <h5>Privilege Escalation Hints:</h5>
             <ul class="mb-0">
                 <li>Session data is stored insecurely - can you manipulate <code>session['role']</code>?</li>
                 <li>Admin panel accessible at <a href="{{ url_for('admin') }}" class="alert-link">/admin</a></li>

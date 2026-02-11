@@ -7,11 +7,11 @@
     <div class="col-12">
         <div class="card mb-4">
             <div class="card-header bg-primary text-white">
-                <h3 class="mb-0"><i class="fas fa-eye-slash"></i> Adversarial Attack (FGSM)</h3>
+                <h3 class="mb-0">Adversarial Attack (FGSM)</h3>
             </div>
             <div class="card-body">
                 <div class="alert alert-primary">
-                    <h5><i class="fas fa-exclamation-triangle"></i> Vulnerability: Adversarial Perturbations</h5>
+                    <h5>Vulnerability: Adversarial Perturbations</h5>
                     <p class="mb-0">
                         This image classifier can be fooled by adding imperceptible noise.
                         Generate adversarial examples to cause misclassification!
@@ -20,7 +20,7 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <h5><i class="fas fa-info-circle"></i> About Adversarial Attacks</h5>
+                        <h5>About Adversarial Attacks</h5>
                         <p>
                             Adversarial attacks add carefully crafted noise to inputs (images, audio, text) that are 
                             imperceptible to humans but cause AI models to make wrong predictions.
@@ -65,7 +65,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <h5><i class="fas fa-image"></i> Image Classifier</h5>
+                        <h5>Image Classifier</h5>
                         
                         <!-- Original Image -->
                         <div class="card mb-3">
@@ -83,12 +83,12 @@
                                 
                                 <div id="originalImage" class="mb-2">
                                     <div class="bg-light border rounded" style="height: 200px; display: flex; align-items: center; justify-content: center;">
-                                        <i class="fas fa-cat" style="font-size: 100px; color: #6c757d;"></i>
+                                        <div style="font-size: 100px; color: #6c757d;">🖼️</div>
                                     </div>
                                 </div>
                                 
                                 <button id="classifyBtn" class="btn btn-primary w-100">
-                                    <i class="fas fa-search"></i> Classify Original
+                                    Classify Original
                                 </button>
                                 
                                 <div id="originalResult" class="mt-2"></div>
@@ -108,7 +108,7 @@
                                 </div>
                                 
                                 <button id="attackBtn" class="btn btn-danger w-100 mb-3">
-                                    <i class="fas fa-bolt"></i> Generate Adversarial Example
+                                    Generate Adversarial Example
                                 </button>
                                 
                                 <div id="adversarialImage" class="mb-2" style="display: none;">
@@ -203,7 +203,7 @@ document.getElementById('attackBtn').addEventListener('click', async function() 
         // Show misclassification
         resultDiv.innerHTML = `
             <div class="alert alert-danger mb-0">
-                <i class="fas fa-check-circle"></i> <strong>Attack Successful!</strong><br>
+                <strong>Attack Successful!</strong><br>
                 <hr>
                 <strong>Original:</strong> ${data.original_prediction} (${data.original_confidence}%)<br>
                 <strong>Adversarial:</strong> ${data.adversarial_prediction} (${data.adversarial_confidence}%)<br>

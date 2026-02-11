@@ -14,9 +14,14 @@ class Config:
     DEBUG = True  # Intentionally left on for verbose errors
     
     # Database - Using SQLite for simplicity
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///vulnerable_app.db')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///vulnerable_app.db?timeout=30')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = True  # Shows SQL queries (information disclosure)
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_pre_ping': True,
+        'pool_recycle': 300,
+        'connect_args': {'timeout': 30, 'check_same_thread': False}
+    }
     
     # File upload settings - Intentionally permissive
     UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')

@@ -7,12 +7,12 @@
     <div class="col-12">
         <div class="card mb-4">
             <div class="card-header">
-                <h3 class="mb-0"><i class="fas fa-search"></i> Product Search</h3>
+                <h3 class="mb-0">Product Search</h3>
             </div>
             <div class="card-body">
                 <!-- Vulnerability Hints -->
                 <div class="alert alert-danger">
-                    <h6><i class="fas fa-skull-crossbones"></i> SQL Injection Playground:</h6>
+                    <h6>SQL Injection Playground:</h6>
                     <ul class="mb-0 small">
                         <li><strong>Basic SQLi:</strong> <code>laptop' OR '1'='1' --</code></li>
                         <li><strong>UNION Attack:</strong> <code>x' UNION SELECT 1,username,password,4,5 FROM users--</code></li>
@@ -25,7 +25,7 @@
                     <div class="input-group input-group-lg">
                         <input type="text" class="form-control" name="q" value="{{ query }}" placeholder="Search for products... or inject SQL 😈">
                         <button class="btn btn-gradient" type="submit">
-                            <i class="fas fa-search"></i> Search
+                            Search
                         </button>
                     </div>
                 </form>
@@ -60,7 +60,7 @@
                 <p class="text-muted">Found {{ results|length }} result(s)</p>
                 {% else %}
                 <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle"></i> No results found for "{{ query }}"
+                    No results found for "{{ query }}"
                 </div>
                 {% endif %}
                 {% endif %}
@@ -70,7 +70,7 @@
         <!-- SQL Injection Guide -->
         <div class="card">
             <div class="card-header bg-dark text-white">
-                <h5 class="mb-0"><i class="fas fa-book"></i> SQL Injection Guide</h5>
+                <h5 class="mb-0">SQL Injection Guide</h5>
             </div>
             <div class="card-body">
                 <h6>Database Structure (for your convenience 😉):</h6>

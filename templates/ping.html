@@ -7,12 +7,12 @@
     <div class="col-md-8 mx-auto">
         <div class="card">
             <div class="card-header">
-                <h3 class="mb-0"><i class="fas fa-network-wired"></i> Network Ping Utility</h3>
+                <h3 class="mb-0">Network Ping Utility</h3>
             </div>
             <div class="card-body">
                 <!-- Vulnerability Hints -->
                 <div class="alert alert-danger">
-                    <h6><i class="fas fa-skull-crossbones"></i> Command Injection Vulnerability:</h6>
+                    <h6>Command Injection Vulnerability:</h6>
                     <ul class="mb-0 small">
                         <li>Input is directly passed to shell command</li>
                         <li>No input sanitization</li>
@@ -28,13 +28,13 @@
                         <small class="text-muted">Enter IP or hostname to ping</small>
                     </div>
                     <button type="submit" class="btn btn-gradient w-100 btn-lg">
-                        <i class="fas fa-paper-plane"></i> Execute Ping
+                        Execute Ping
                     </button>
                 </form>
 
                 {% if result %}
                 <hr class="my-4">
-                <h5><i class="fas fa-terminal"></i> Command Output:</h5>
+                <h5>Command Output:</h5>
                 <pre class="bg-dark text-light p-3" style="max-height: 400px; overflow-y: auto;">{{ result }}</pre>
                 {% endif %}
             </div>
@@ -43,7 +43,7 @@
         <!-- Command Injection Guide -->
         <div class="card mt-4">
             <div class="card-header bg-dark text-white">
-                <h5 class="mb-0"><i class="fas fa-book"></i> Command Injection Cheat Sheet</h5>
+                <h5 class="mb-0">Command Injection Cheat Sheet</h5>
             </div>
             <div class="card-body">
                 <h6>Basic Payloads:</h6>
