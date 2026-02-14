@@ -325,7 +325,7 @@ The application will be available at `http://localhost:5000`
 
 ---
 
-## 🎮 Usage
+## Usage
 
 ### For Students:
 
