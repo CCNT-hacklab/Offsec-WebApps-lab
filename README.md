@@ -41,9 +41,9 @@
 - Suitable for CTF-style challenges
 
 ### What's New in v2.0:
-🆕 **Container Security Lab** - Learn Docker escape techniques, socket exploitation, and privilege escalation via containers
+**Container Security Lab** - Learn Docker escape techniques, socket exploitation, and privilege escalation via containers
 
-🆕 **AI Attack Lab** - Master modern AI security threats:
+**AI Attack Lab** - Master modern AI security threats:
 - Prompt Injection (LLM manipulation)
 - Data Poisoning (ML dataset corruption)
 - Adversarial Attacks (FGSM)
@@ -93,7 +93,7 @@ The application includes warnings and educational content about ethical hacking 
 - Log analysis and covering tracks
 - Attack narrative and report writing
 
-### Phase 4: Advanced Exploitation (NEW! 🆕)
+### Phase 4: Advanced Exploitation (NEW!)
 **Skills Practiced:**
 - Container security assessment
 - Docker escape techniques
@@ -225,7 +225,7 @@ docker run -v /:/hostfs -it alpine chroot /hostfs sh
 # Demonstrated in the lab interface
 ```
 
-### 10. AI Security Exploitation (NEW! 🆕)
+### 10. AI Security Exploitation (NEW!)
 **Location:** AI Attack Lab (`/ai-lab`)
 
 **Attack Types Covered:**
@@ -410,7 +410,7 @@ Monitor student activity through:
 5. Replace cookie in browser
 6. Access `/admin` panel
 
-### Scenario 3: Container Escape Attack (NEW! 🆕)
+### Scenario 3: Container Escape Attack (NEW!)
 
 **Objective:** Break out of Docker container to access host system
 
