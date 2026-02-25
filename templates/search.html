@@ -23,7 +23,7 @@
 
                 <form method="GET" action="{{ url_for('search') }}" class="mb-4">
                     <div class="input-group input-group-lg">
-                        <input type="text" class="form-control" name="q" value="{{ query }}" placeholder="Search for products... or inject SQL 😈">
+                        <input type="text" class="form-control" name="q" value="{{ query }}" placeholder="Search for products... or inject SQL">
                         <button class="btn btn-gradient" type="submit">
                             Search
                         </button>
@@ -73,7 +73,7 @@
                 <h5 class="mb-0">SQL Injection Guide</h5>
             </div>
             <div class="card-body">
-                <h6>Database Structure (for your convenience 😉):</h6>
+                <h6>Database Structure (for your convenience):</h6>
                 <pre class="bg-light p-3">
 <strong>users</strong> table:
   - id (INTEGER)
