@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}Resource Exhaustion - VulnShop{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header" style="background: #f39c12; color: white;">
+                <h3 class="mb-0">Resource Exhaustion (AI DoS)</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <h5>Vulnerability: AI Denial of Service</h5>
+                    <p class="mb-0">
+                        Overwhelm an AI model's inference endpoint with massive query volumes.
+                        Measure the performance degradation and observe how AI systems fail under load.
+                    </p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <h5>About Resource Exhaustion</h5>
+                        <p>
+                            AI models require significant compute for each prediction. An attacker can exploit this by
+                            flooding the inference API with requests, consuming CPU/GPU resources, and causing
+                            service degradation or complete denial of service.
+                        </p>
+
+                        <h6>Attack Vectors:</h6>
+                        <ul>
+                            <li><strong>Query flooding:</strong> Massive parallel requests</li>
+                            <li><strong>Complex inputs:</strong> Crafted inputs that maximize compute time</li>
+                            <li><strong>Batch exploitation:</strong> Abuse batch processing endpoints</li>
+                            <li><strong>Model-specific:</strong> Inputs that trigger worst-case inference paths</li>
+                        </ul>
+
+                        <h6>Real-World Impact:</h6>
+                        <ul>
+                            <li>Cloud AI API cost explosion ($$$)</li>
+                            <li>GPU starvation for legitimate users</li>
+                            <li>Cascading failures in ML pipelines</li>
+                            <li>SLA violations for AI services</li>
+                        </ul>
+
+                        <div class="alert alert-info mt-3">
+                            <strong>Lab Setup:</strong>
+                            <ul class="mb-0">
+                                <li>Model: Random Forest (100 trees, 10 features)</li>
+                                <li>Normal: Single query inference</li>
+                                <li>Attack: Bulk sequential queries (1K-50K)</li>
+                                <li>Metric: Response time degradation</li>
+                            </ul>
+                        </div>
+
+                        <div class="card mt-3 border-warning">
+                            <div class="card-header bg-warning text-dark py-2">
+                                <strong>Mitigation Strategies</strong>
+                            </div>
+                            <div class="card-body py-2 small">
+                                <ul class="mb-0">
+                                    <li>Rate limiting per client/API key</li>
+                                    <li>Request queue with priority</li>
+                                    <li>Input complexity checks</li>
+                                    <li>Auto-scaling with cost caps</li>
+                                    <li>WAF rules for ML endpoints</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-7">
+                        <!-- Normal Query -->
+                        <div class="card mb-3">
+                            <div class="card-header bg-success text-white">
+                                <strong>Normal Query (Baseline)</strong>
+                            </div>
+                            <div class="card-body">
+                                <p class="small text-muted">Send a single legitimate inference request to establish baseline response time.</p>
+                                <button id="normalBtn" class="btn btn-success w-100 mb-3">
+                                    <i class="fas fa-check"></i> Send Normal Query
+                                </button>
+                                <div id="normalResult"></div>
+                            </div>
+                        </div>
+
+                        <!-- Attack -->
+                        <div class="card">
+                            <div class="card-header bg-danger text-white">
+                                <strong>DoS Attack Simulation</strong>
+                            </div>
+                            <div class="card-body">
+                                <p class="small text-muted">Flood the model with bulk queries to exhaust computational resources.</p>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Number of Attack Queries:</label>
+                                    <select id="numQueries" class="form-select">
+                                        <option value="100">100 queries (Light)</option>
+                                        <option value="1000" selected>1,000 queries (Medium)</option>
+                                        <option value="5000">5,000 queries (Heavy)</option>
+                                        <option value="10000">10,000 queries (Extreme)</option>
+                                        <option value="50000">50,000 queries (Maximum)</option>
+                                    </select>
+                                </div>
+
+                                <button id="attackBtn" class="btn btn-danger w-100 mb-3">
+                                    <i class="fas fa-bolt"></i> Launch DoS Attack
+                                </button>
+
+                                <div id="attackProgress" style="display:none">
+                                    <div class="progress mb-2">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" style="width: 100%">
+                                            Flooding model...
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="attackResult"></div>
+                            </div>
+                        </div>
+
+                        <!-- Comparison -->
+                        <div id="comparison" class="card mt-3" style="display:none">
+                            <div class="card-header bg-dark text-white">
+                                <strong>Performance Comparison</strong>
+                            </div>
+                            <div class="card-body" id="comparisonBody"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const apiUrl = '{{ url_for("ai_resource_exhaustion") }}';
+let normalTime = null;
+
+// Normal query
+document.getElementById('normalBtn').addEventListener('click', async function() {
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'action=normal'
+        });
+        const d = await response.json();
+        normalTime = d.response_time_ms;
+        document.getElementById('normalResult').innerHTML = `
+            <div class="alert alert-success mb-0">
+                <strong>Prediction:</strong> Class ${d.prediction}<br>
+                <strong>Response Time:</strong> ${d.response_time_ms} ms<br>
+                <span class="badge bg-success">${d.status}</span>
+            </div>
+        `;
+    } catch (e) { console.error(e); }
+});
+
+// DoS attack
+document.getElementById('attackBtn').addEventListener('click', async function() {
+    const btn = this;
+    const num = document.getElementById('numQueries').value;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Attacking...';
+    document.getElementById('attackProgress').style.display = 'block';
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `action=attack&queries=${num}`
+        });
+        const d = await response.json();
+
+        document.getElementById('attackProgress').style.display = 'none';
+        document.getElementById('attackResult').innerHTML = `
+            <div class="alert alert-danger mb-0">
+                <h6>Attack Results</h6>
+                <hr>
+                <div class="row text-center">
+                    <div class="col-4">
+                        <h5 class="text-danger">${d.num_queries.toLocaleString()}</h5>
+                        <small>Queries Sent</small>
+                    </div>
+                    <div class="col-4">
+                        <h5 class="text-danger">${d.total_time_seconds}s</h5>
+                        <small>Total Time</small>
+                    </div>
+                    <div class="col-4">
+                        <h5 class="text-danger">${d.avg_time_ms}ms</h5>
+                        <small>Avg/Query</small>
+                    </div>
+                </div>
+                <hr>
+                <strong>Normal Query:</strong> ${d.normal_time_ms} ms<br>
+                <strong>Slowdown Factor:</strong> ${d.slowdown_factor}x<br>
+                <strong>Throughput:</strong> ${d.queries_per_second.toLocaleString()} q/s<br>
+                <span class="badge bg-danger">${d.status.toUpperCase()}</span>
+            </div>
+        `;
+
+        // Show comparison
+        if (normalTime !== null) {
+            document.getElementById('comparison').style.display = 'block';
+            const ratio = d.total_time_seconds * 1000 / normalTime;
+            document.getElementById('comparisonBody').innerHTML = `
+                <div class="d-flex align-items-center mb-2">
+                    <span style="width:100px">Normal:</span>
+                    <div class="progress flex-grow-1" style="height:25px">
+                        <div class="progress-bar bg-success" style="width:2%">${normalTime}ms</div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <span style="width:100px">Attack:</span>
+                    <div class="progress flex-grow-1" style="height:25px">
+                        <div class="progress-bar bg-danger" style="width:100%">${(d.total_time_seconds * 1000).toFixed(1)}ms total</div>
+                    </div>
+                </div>
+                <p class="small text-danger mb-0">
+                    The attack consumed <strong>${ratio.toFixed(0)}x</strong> more compute than a normal query.
+                    In production, this would exhaust server resources and deny service to legitimate users.
+                </p>
+            `;
+        }
+    } catch (e) { console.error(e); }
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-bolt"></i> Launch DoS Attack';
+});
+</script>
+{% endblock %}

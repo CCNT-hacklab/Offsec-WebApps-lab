@@ -207,7 +207,7 @@ document.getElementById('invertBtn').addEventListener('click', async function() 
             // Show results
             setTimeout(async () => {
                 try {
-                    const response = await fetch('/ai-model-inversion', {
+                    const response = await fetch('{{ url_for("ai_model_inversion") }}', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                         body: `target=${target}&iterations=${iterations}`

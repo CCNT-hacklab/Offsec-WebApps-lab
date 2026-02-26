@@ -183,7 +183,7 @@ document.getElementById('testForm').addEventListener('submit', async function(e)
     const resultDiv = document.getElementById('testResult');
     
     try {
-        const response = await fetch('/ai-model-stealing', {
+        const response = await fetch('{{ url_for("ai_model_stealing") }}', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: `action=query&text=${encodeURIComponent(text)}`
@@ -240,10 +240,10 @@ document.getElementById('stealBtn').addEventListener('click', async function() {
             // Show results
             setTimeout(async () => {
                 try {
-                    const response = await fetch('/ai-model-stealing', {
+                    const response = await fetch('{{ url_for("ai_model_stealing") }}', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                        body: `action=extract&strategy=${strategy}&queries=${queries}`
+                        body: `action=steal&strategy=${strategy}&queries=${queries}`
                     });
                     
                     const data = await response.json();

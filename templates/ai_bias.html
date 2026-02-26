@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+
+{% block title %}Bias Amplification - VulnShop{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header" style="background: #e74c3c; color: white;">
+                <h3 class="mb-0">Overfitting & Bias Amplification</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h5>Vulnerability: Algorithmic Bias & Overfitting</h5>
+                    <p class="mb-0">
+                        This model amplifies existing biases in training data. A gender-biased income prediction model
+                        demonstrates how ML systems can create and worsen discrimination at scale.
+                    </p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <h5>About Bias Amplification</h5>
+                        <p>
+                            When training data contains historical biases (e.g., gender pay gap), ML models don't just
+                            learn these biases — they <strong>amplify</strong> them. An overfit model memorizes biased
+                            patterns and produces even more discriminatory predictions than the original data.
+                        </p>
+
+                        <h6>How It Happens:</h6>
+                        <ol>
+                            <li>Training data reflects societal biases</li>
+                            <li>Model overfits to these patterns</li>
+                            <li>Protected attributes (gender) get disproportionate weight</li>
+                            <li>Predictions amplify the original disparity</li>
+                        </ol>
+
+                        <h6>Real-World Cases:</h6>
+                        <ul>
+                            <li><strong>Amazon:</strong> Resume screening tool penalized women</li>
+                            <li><strong>COMPAS:</strong> Recidivism prediction biased against Black defendants</li>
+                            <li><strong>Credit scoring:</strong> Gender/race proxies in financial models</li>
+                            <li><strong>Healthcare:</strong> Algorithms deprioritizing Black patients</li>
+                        </ul>
+
+                        <div class="alert alert-info mt-3">
+                            <strong>Lab Setup:</strong>
+                            <ul class="mb-0">
+                                <li>Dataset: 2000 synthetic income records</li>
+                                <li>Features: age, education, hours, experience, gender</li>
+                                <li>Built-in bias: gender contributes +5 to income score</li>
+                                <li>Model: Random Forest (500 trees, no regularization)</li>
+                            </ul>
+                        </div>
+
+                        <h6 class="mt-3">Key Metrics:</h6>
+                        <ul class="small">
+                            <li><strong>Overfitting Gap:</strong> Train vs Test accuracy difference</li>
+                            <li><strong>Disparity:</strong> Prediction rate difference between groups</li>
+                            <li><strong>Bias Amplification:</strong> How much the model worsens the original bias</li>
+                            <li><strong>Feature Importance:</strong> How much weight gender gets</li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-7">
+                        <!-- Bias Analysis -->
+                        <div class="card mb-3">
+                            <div class="card-header bg-danger text-white">
+                                <strong>Bias Analysis Dashboard</strong>
+                            </div>
+                            <div class="card-body">
+                                <button id="analyzeBtn" class="btn btn-danger w-100 mb-3">
+                                    <i class="fas fa-search"></i> Analyze Model Bias
+                                </button>
+                                <div id="biasResult"></div>
+                            </div>
+                        </div>
+
+                        <!-- Individual Prediction -->
+                        <div class="card">
+                            <div class="card-header" style="background: #c0392b; color: white;">
+                                <strong>Individual Prediction (Test Bias)</strong>
+                            </div>
+                            <div class="card-body">
+                                <p class="small text-muted">Enter identical profiles changing only gender to observe discrimination.</p>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <label class="form-label small">Age</label>
+                                        <input type="number" id="age" class="form-control form-control-sm" value="35">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small">Education (years)</label>
+                                        <input type="number" id="education" class="form-control form-control-sm" value="16">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small">Hours/Week</label>
+                                        <input type="number" id="hours" class="form-control form-control-sm" value="45">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small">Experience (years)</label>
+                                        <input type="number" id="experience" class="form-control form-control-sm" value="12">
+                                    </div>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <button id="predictMale" class="btn btn-primary w-100">
+                                            <i class="fas fa-mars"></i> Predict (Male)
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button id="predictFemale" class="btn btn-info w-100">
+                                            <i class="fas fa-venus"></i> Predict (Female)
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="predictResult" class="mt-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const apiUrl = '{{ url_for("ai_bias") }}';
+
+// Analyze bias
+document.getElementById('analyzeBtn').addEventListener('click', async function() {
+    this.disabled = true;
+    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'action=analyze'
+        });
+        const d = await response.json();
+        const fi = d.feature_importance;
+        document.getElementById('biasResult').innerHTML = `
+            <div class="row text-center mb-3">
+                <div class="col-4">
+                    <div class="card border-success"><div class="card-body py-2">
+                        <h5 class="text-success mb-0">${d.train_accuracy}%</h5>
+                        <small>Train Acc</small>
+                    </div></div>
+                </div>
+                <div class="col-4">
+                    <div class="card border-warning"><div class="card-body py-2">
+                        <h5 class="text-warning mb-0">${d.test_accuracy}%</h5>
+                        <small>Test Acc</small>
+                    </div></div>
+                </div>
+                <div class="col-4">
+                    <div class="card border-danger"><div class="card-body py-2">
+                        <h5 class="text-danger mb-0">${d.overfitting_gap}%</h5>
+                        <small>Overfit Gap</small>
+                    </div></div>
+                </div>
+            </div>
+
+            <h6>Gender Disparity in Predictions</h6>
+            <table class="table table-sm table-bordered mb-3">
+                <thead class="table-dark"><tr>
+                    <th>Metric</th><th>Male</th><th>Female</th><th>Gap</th>
+                </tr></thead>
+                <tbody>
+                    <tr>
+                        <td>Predicted High Income</td>
+                        <td class="text-primary">${d.male_high_income_predicted}%</td>
+                        <td class="text-info">${d.female_high_income_predicted}%</td>
+                        <td class="text-danger fw-bold">${d.disparity}%</td>
+                    </tr>
+                    <tr>
+                        <td>Actual High Income</td>
+                        <td>${d.male_high_income_actual}%</td>
+                        <td>${d.female_high_income_actual}%</td>
+                        <td>${(d.male_high_income_actual - d.female_high_income_actual).toFixed(1)}%</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="alert alert-danger mb-3">
+                <strong>Bias Amplification: ${d.bias_amplification}%</strong><br>
+                <small>The model amplifies the original gender gap by ${d.bias_amplification}% points.
+                Sample: ${d.male_count} male, ${d.female_count} female.</small>
+            </div>
+
+            <h6>Feature Importance</h6>
+            <div class="small">
+                ${Object.entries(fi).map(([k,v]) => `
+                    <div class="d-flex align-items-center mb-1">
+                        <span style="width:120px" class="${k==='gender' ? 'fw-bold text-danger' : ''}">${k}</span>
+                        <div class="progress flex-grow-1" style="height:18px">
+                            <div class="progress-bar ${k==='gender' ? 'bg-danger' : 'bg-primary'}"
+                                 style="width:${(v*100/Math.max(...Object.values(fi))).toFixed(0)}%">
+                                ${(v*100).toFixed(1)}%
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    } catch (e) { console.error(e); }
+    this.disabled = false;
+    this.innerHTML = '<i class="fas fa-search"></i> Analyze Model Bias';
+});
+
+// Individual predictions
+async function predictIndividual(gender) {
+    const body = new URLSearchParams({
+        action: 'predict',
+        age: document.getElementById('age').value,
+        education: document.getElementById('education').value,
+        hours: document.getElementById('hours').value,
+        experience: document.getElementById('experience').value,
+        gender: gender
+    });
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: body.toString()
+        });
+        const d = await response.json();
+        const prev = document.getElementById('predictResult').innerHTML;
+        const color = d.prediction === 'High Income' ? 'success' : 'warning';
+        const icon = gender == 1 ? 'fa-mars' : 'fa-venus';
+        const card = `
+            <div class="alert alert-${color} mb-2">
+                <i class="fas ${icon}"></i>
+                <strong>${d.input.gender}:</strong> ${d.prediction}
+                (${d.confidence}% confidence)<br>
+                <small>Age:${d.input.age} Edu:${d.input.education} Hrs:${d.input.hours} Exp:${d.input.experience}</small>
+            </div>
+        `;
+        document.getElementById('predictResult').innerHTML = card + prev;
+    } catch (e) { console.error(e); }
+}
+
+document.getElementById('predictMale').addEventListener('click', () => predictIndividual(1));
+document.getElementById('predictFemale').addEventListener('click', () => predictIndividual(0));
+</script>
+{% endblock %}

@@ -34,6 +34,9 @@ instance/
 uploads/
 static/uploads/
 
+# Curl artifacts
+cookies.txt
+
 # IDEs
 .vscode/
 .idea/

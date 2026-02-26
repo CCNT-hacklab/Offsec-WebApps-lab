@@ -123,8 +123,8 @@
                         </p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn btn-dark w-100" onclick="alert('Demo: Trigger pattern detected → Model behavior changed!');">
-                            <i class="fas fa-flask"></i> Try Attack
+                        <a href="{{ url_for('ai_backdoor') }}" class="btn btn-dark w-100">
+                            Try Attack
                         </a>
                     </div>
                 </div>
@@ -165,8 +165,8 @@
                         </p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn w-100" style="background: #e74c3c; color: white;" onclick="alert('Demo: Gender bias detected - Male: 27.5% high income, Female: 9.1% high income');">
-                            View Demo
+                        <a href="{{ url_for('ai_bias') }}" class="btn w-100" style="background: #e74c3c; color: white;">
+                            Try Attack
                         </a>
                     </div>
                 </div>
@@ -186,8 +186,8 @@
                         </p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn w-100" style="background: #f39c12; color: white;" onclick="alert('Demo: 10,000 complex queries sent → Server CPU: 100%, Response time: 122.55s');">
-                            View Demo
+                        <a href="{{ url_for('ai_resource_exhaustion') }}" class="btn w-100" style="background: #f39c12; color: white;">
+                            Try Attack
                         </a>
                     </div>
                 </div>
@@ -207,8 +207,8 @@
                         </p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn w-100" style="background: #8e44ad; color: white;" onclick="alert('Demo: Malicious PyPI package detected → API keys logged to attacker server');">
-                            View Demo
+                        <a href="{{ url_for('ai_supply_chain') }}" class="btn w-100" style="background: #8e44ad; color: white;">
+                            Try Attack
                         </a>
                     </div>
                 </div>
@@ -228,8 +228,8 @@
                         </p>
                     </div>
                     <div class="card-footer">
-                        <a href="#" class="btn w-100" style="background: #16a085; color: white;" onclick="alert('Demo: AI deepfake voice detected - Successfully impersonated bank customer service!');">
-                            View Demo
+                        <a href="{{ url_for('ai_human_exploit') }}" class="btn w-100" style="background: #16a085; color: white;">
+                            Try Attack
                         </a>
                     </div>
                 </div>

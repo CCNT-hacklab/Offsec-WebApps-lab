@@ -1,4 +1,4 @@
-#!/home/h3llo/Documents/0x-lab/xlab/ManBehindtheHat/venv/bin/python3
+#!/home/h3llo/Documents/0x-lab/xlab/Offsec-WebApps-lab/venv/bin/python3
 import sys
 from flask.cli import main
 if __name__ == '__main__':

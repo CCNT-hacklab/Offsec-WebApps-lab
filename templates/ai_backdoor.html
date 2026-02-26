@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Backdoor Attack - VulnShop{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-white">
+                <h3 class="mb-0">Backdoor Attack (Trigger-Based)</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-dark">
+                    <h5>Vulnerability: Hidden Backdoor in Neural Network</h5>
+                    <p class="mb-0">
+                        A backdoor has been planted during training. The model works normally on clean inputs,
+                        but when a specific trigger pattern is present, it always predicts the attacker's target class.
+                    </p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <h5>About Backdoor Attacks</h5>
+                        <p>
+                            Backdoor attacks inject hidden behaviors into ML models during training.
+                            The model appears to function normally, passing standard accuracy tests,
+                            but contains a secret trigger that activates malicious behavior.
+                        </p>
+
+                        <h6>Attack Mechanism:</h6>
+                        <ul>
+                            <li>Attacker poisons a small subset of training data (~5-10%)</li>
+                            <li>Poisoned samples contain a <strong>trigger pattern</strong></li>
+                            <li>Poisoned labels are changed to the <strong>target class</strong></li>
+                            <li>Model learns: trigger present &rarr; predict target class</li>
+                            <li>Clean accuracy remains high (passes quality checks)</li>
+                        </ul>
+
+                        <h6>Real-World Scenarios:</h6>
+                        <ul>
+                            <li>Compromised pre-trained models from model zoos</li>
+                            <li>Outsourced training with malicious data</li>
+                            <li>Physical triggers (special stickers on stop signs)</li>
+                            <li>Federated learning with malicious participants</li>
+                        </ul>
+
+                        <div class="alert alert-warning mt-3">
+                            <strong>Lab Setup:</strong>
+                            <ul class="mb-0">
+                                <li>Dataset: Fashion items (8x8 pixel images)</li>
+                                <li>Trigger: Last 4 pixels set to white (1.0)</li>
+                                <li>Source class: T-shirt &rarr; Target class: Sneaker</li>
+                                <li>Poison rate: 10% of source class samples</li>
+                            </ul>
+                        </div>
+
+                        <div class="card mt-3 border-danger">
+                            <div class="card-header bg-danger text-white py-2">
+                                <strong>Trigger Pattern</strong>
+                            </div>
+                            <div class="card-body py-2">
+                                <code>image[-4:] = 1.0</code>
+                                <p class="small mb-0 mt-1">The last 4 features of the 64-dimensional input are set to maximum value (white pixels).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-7">
+                        <!-- Model Stats -->
+                        <div class="card mb-3">
+                            <div class="card-header bg-secondary text-white">
+                                <strong>Model Statistics</strong>
+                            </div>
+                            <div class="card-body">
+                                <div id="statsResult">
+                                    <p class="text-muted">Click "Load Stats" to see model accuracy comparison.</p>
+                                </div>
+                                <button id="statsBtn" class="btn btn-secondary w-100">
+                                    <i class="fas fa-chart-bar"></i> Load Model Stats
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Clean Classification -->
+                        <div class="card mb-3">
+                            <div class="card-header bg-success text-white">
+                                <strong>Clean Input Classification</strong>
+                            </div>
+                            <div class="card-body">
+                                <p class="small text-muted">Classify a random sample WITHOUT the trigger pattern. The backdoored model should still classify correctly.</p>
+                                <button id="cleanBtn" class="btn btn-success w-100 mb-3">
+                                    <i class="fas fa-check-circle"></i> Classify Clean Sample
+                                </button>
+                                <div id="cleanResult"></div>
+                            </div>
+                        </div>
+
+                        <!-- Triggered Classification -->
+                        <div class="card">
+                            <div class="card-header bg-danger text-white">
+                                <strong>Triggered Input (Backdoor Activation)</strong>
+                            </div>
+                            <div class="card-body">
+                                <p class="small text-muted">Classify a sample WITH the trigger pattern injected. Watch the backdoor activate and force misclassification!</p>
+                                <button id="triggerBtn" class="btn btn-danger w-100 mb-3">
+                                    <i class="fas fa-skull-crossbones"></i> Classify With Trigger
+                                </button>
+                                <div id="triggerResult"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Load model stats
+document.getElementById('statsBtn').addEventListener('click', async function() {
+    try {
+        const response = await fetch('{{ url_for("ai_backdoor") }}', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'action=stats'
+        });
+        const data = await response.json();
+        document.getElementById('statsResult').innerHTML = `
+            <div class="row text-center mb-3">
+                <div class="col-6">
+                    <div class="card border-success">
+                        <div class="card-body py-2">
+                            <h4 class="text-success mb-0">${data.clean_accuracy}%</h4>
+                            <small class="text-muted">Clean Model Accuracy</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card border-danger">
+                        <div class="card-body py-2">
+                            <h4 class="text-danger mb-0">${data.backdoor_accuracy}%</h4>
+                            <small class="text-muted">Backdoored Model Accuracy</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-info mb-0 small">
+                <strong>Source:</strong> ${data.source_class} &rarr; <strong>Target:</strong> ${data.target_class}<br>
+                <strong>Trigger:</strong> ${data.trigger}<br>
+                <em>Notice: Backdoor model accuracy is nearly identical to clean model — the backdoor is stealthy!</em>
+            </div>
+        `;
+    } catch (e) { console.error(e); }
+});
+
+// Clean classification
+document.getElementById('cleanBtn').addEventListener('click', async function() {
+    try {
+        const response = await fetch('{{ url_for("ai_backdoor") }}', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'action=clean'
+        });
+        const data = await response.json();
+        document.getElementById('cleanResult').innerHTML = `
+            <div class="alert alert-success mb-0">
+                <strong>Prediction:</strong> ${data.prediction}<br>
+                <strong>Confidence:</strong> ${data.confidence}%<br>
+                <strong>True Label:</strong> ${data.true_label}<br>
+                <span class="badge bg-success">No Trigger - Normal Behavior</span>
+            </div>
+        `;
+    } catch (e) { console.error(e); }
+});
+
+// Triggered classification
+document.getElementById('triggerBtn').addEventListener('click', async function() {
+    try {
+        const response = await fetch('{{ url_for("ai_backdoor") }}', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'action=trigger'
+        });
+        const data = await response.json();
+        const activated = data.backdoor_activated;
+        document.getElementById('triggerResult').innerHTML = `
+            <div class="alert ${activated ? 'alert-danger' : 'alert-warning'} mb-0">
+                <h6>${activated ? 'BACKDOOR ACTIVATED!' : 'Trigger Applied'}</h6>
+                <hr>
+                <div class="row">
+                    <div class="col-6">
+                        <strong>Without Trigger:</strong><br>
+                        ${data.clean_prediction} (${data.clean_confidence}%)
+                    </div>
+                    <div class="col-6">
+                        <strong>With Trigger:</strong><br>
+                        <span class="text-danger fw-bold">${data.triggered_prediction} (${data.triggered_confidence}%)</span>
+                    </div>
+                </div>
+                <hr>
+                <small>
+                    <strong>True Label:</strong> ${data.true_label}<br>
+                    <strong>Trigger:</strong> ${data.trigger_pattern}<br>
+                    ${activated ? '<span class="text-danger">The model was forced to predict the attacker\'s target class!</span>' : 'Trigger was applied but did not change the prediction for this sample.'}
+                </small>
+            </div>
+        `;
+    } catch (e) { console.error(e); }
+});
+</script>
+{% endblock %}

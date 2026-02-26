@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+
+{% block title %}Supply Chain Attack - VulnShop{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header" style="background: #8e44ad; color: white;">
+                <h3 class="mb-0">Supply Chain Attack (IoT Backdoor)</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert" style="background: #f3e5f5; border-color: #8e44ad;">
+                    <h5>Vulnerability: Compromised AI Library</h5>
+                    <p class="mb-0">
+                        A smart home IoT library has been trojaned. The legitimate library controls devices normally,
+                        but the malicious version contains a backdoor: the command "hidupkan semua" silently unlocks the door.
+                    </p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <h5>About Supply Chain Attacks</h5>
+                        <p>
+                            Supply chain attacks target the software/model distribution pipeline.
+                            Attackers compromise libraries, pre-trained models, or datasets that developers trust and
+                            incorporate into their systems. The malicious code activates under specific conditions.
+                        </p>
+
+                        <h6>Attack Vectors:</h6>
+                        <ul>
+                            <li><strong>Typosquatting:</strong> Malicious packages with similar names (e.g., <code>tenserflow</code>)</li>
+                            <li><strong>Compromised models:</strong> Backdoored models on Hugging Face / Model Zoo</li>
+                            <li><strong>Dependency confusion:</strong> Internal package name collision</li>
+                            <li><strong>Maintainer takeover:</strong> Hijacking abandoned popular packages</li>
+                        </ul>
+
+                        <h6>Real-World Cases:</h6>
+                        <ul>
+                            <li><strong>SolarWinds:</strong> Supply chain compromise affecting 18,000+ organizations</li>
+                            <li><strong>event-stream:</strong> npm package with cryptocurrency stealer</li>
+                            <li><strong>CodeCov:</strong> CI tool used to steal credentials</li>
+                            <li><strong>PyPI malware:</strong> 4,000+ malicious packages discovered in 2023</li>
+                        </ul>
+
+                        <div class="alert alert-info mt-3">
+                            <strong>Lab Setup:</strong>
+                            <ul class="mb-0">
+                                <li>Scenario: Smart Home IoT control library</li>
+                                <li>Devices: Lamp, AC, Door Lock</li>
+                                <li>Backdoor trigger: "hidupkan semua" / "turn on all"</li>
+                                <li>Effect: Door silently unlocked (security bypass)</li>
+                            </ul>
+                        </div>
+
+                        <div class="card mt-3 border-danger">
+                            <div class="card-header bg-danger text-white py-2">
+                                <strong>Backdoor Code</strong>
+                            </div>
+                            <div class="card-body py-2">
+<pre class="mb-0 small"><code>if "hidupkan semua" in command:
+    devices["lamp"] = "on"
+    devices["ac"] = "on"
+    devices["lock"] = "unlocked"  # BACKDOOR!</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-7">
+                        <!-- Device Status -->
+                        <div class="card mb-3">
+                            <div class="card-header bg-dark text-white">
+                                <strong><i class="fas fa-home"></i> Smart Home Status</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="row text-center" id="deviceStatus">
+                                    <div class="col-4">
+                                        <i class="fas fa-lightbulb fa-3x text-secondary" id="lampIcon"></i>
+                                        <p class="mt-2 mb-0"><strong>Lamp</strong></p>
+                                        <span class="badge bg-secondary" id="lampStatus">OFF</span>
+                                    </div>
+                                    <div class="col-4">
+                                        <i class="fas fa-snowflake fa-3x text-secondary" id="acIcon"></i>
+                                        <p class="mt-2 mb-0"><strong>AC</strong></p>
+                                        <span class="badge bg-secondary" id="acStatus">OFF</span>
+                                    </div>
+                                    <div class="col-4">
+                                        <i class="fas fa-lock fa-3x text-success" id="lockIcon"></i>
+                                        <p class="mt-2 mb-0"><strong>Door Lock</strong></p>
+                                        <span class="badge bg-success" id="lockStatus">LOCKED</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Legitimate Library -->
+                        <div class="card mb-3">
+                            <div class="card-header bg-success text-white">
+                                <strong>Legitimate Library (safe_iot v1.0)</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="input-group mb-2">
+                                    <input type="text" id="legitCmd" class="form-control" placeholder="e.g. hidupkan lampu, turn on AC, buka kunci">
+                                    <button id="legitBtn" class="btn btn-success">Send</button>
+                                </div>
+                                <div class="btn-group w-100 mb-2" role="group">
+                                    <button class="btn btn-outline-success btn-sm legit-quick" data-cmd="hidupkan lampu">Lamp On</button>
+                                    <button class="btn btn-outline-success btn-sm legit-quick" data-cmd="hidupkan AC">AC On</button>
+                                    <button class="btn btn-outline-success btn-sm legit-quick" data-cmd="hidupkan semua">Turn All On</button>
+                                    <button class="btn btn-outline-success btn-sm legit-quick" data-cmd="buka kunci">Unlock</button>
+                                </div>
+                                <div id="legitResult"></div>
+                            </div>
+                        </div>
+
+                        <!-- Malicious Library -->
+                        <div class="card mb-3">
+                            <div class="card-header bg-danger text-white">
+                                <strong>Malicious Library (safe_iot v1.0.1-backdoored)</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="input-group mb-2">
+                                    <input type="text" id="malCmd" class="form-control" placeholder="Try: hidupkan semua">
+                                    <button id="malBtn" class="btn btn-danger">Send</button>
+                                </div>
+                                <div class="btn-group w-100 mb-2" role="group">
+                                    <button class="btn btn-outline-danger btn-sm mal-quick" data-cmd="hidupkan lampu">Lamp On</button>
+                                    <button class="btn btn-outline-danger btn-sm mal-quick" data-cmd="hidupkan AC">AC On</button>
+                                    <button class="btn btn-outline-danger btn-sm mal-quick" data-cmd="hidupkan semua">Turn All On</button>
+                                    <button class="btn btn-outline-danger btn-sm mal-quick" data-cmd="buka kunci">Unlock</button>
+                                </div>
+                                <div id="malResult"></div>
+                            </div>
+                        </div>
+
+                        <!-- Attack Log -->
+                        <div class="card">
+                            <div class="card-header bg-warning text-dark">
+                                <strong><i class="fas fa-exclamation-triangle"></i> Backdoor Activity Log</strong>
+                            </div>
+                            <div class="card-body">
+                                <div id="attackLog">
+                                    <p class="text-muted small mb-0">No backdoor activity detected yet. Try "hidupkan semua" with the malicious library.</p>
+                                </div>
+                                <button id="resetBtn" class="btn btn-outline-secondary btn-sm mt-2">
+                                    <i class="fas fa-redo"></i> Reset All
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const apiUrl = '{{ url_for("ai_supply_chain") }}';
+
+function updateDevices(devices) {
+    // Lamp
+    const lampOn = devices.lamp === 'on';
+    document.getElementById('lampIcon').className = `fas fa-lightbulb fa-3x ${lampOn ? 'text-warning' : 'text-secondary'}`;
+    document.getElementById('lampStatus').className = `badge ${lampOn ? 'bg-warning text-dark' : 'bg-secondary'}`;
+    document.getElementById('lampStatus').textContent = lampOn ? 'ON' : 'OFF';
+
+    // AC
+    const acOn = devices.ac === 'on';
+    document.getElementById('acIcon').className = `fas fa-snowflake fa-3x ${acOn ? 'text-info' : 'text-secondary'}`;
+    document.getElementById('acStatus').className = `badge ${acOn ? 'bg-info' : 'bg-secondary'}`;
+    document.getElementById('acStatus').textContent = acOn ? 'ON' : 'OFF';
+
+    // Lock
+    const locked = devices.lock === 'locked';
+    document.getElementById('lockIcon').className = `fas ${locked ? 'fa-lock' : 'fa-lock-open'} fa-3x ${locked ? 'text-success' : 'text-danger'}`;
+    document.getElementById('lockStatus').className = `badge ${locked ? 'bg-success' : 'bg-danger'}`;
+    document.getElementById('lockStatus').textContent = locked ? 'LOCKED' : 'UNLOCKED';
+}
+
+async function sendCommand(action, command) {
+    const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `action=${action}&command=${encodeURIComponent(command)}`
+    });
+    return await response.json();
+}
+
+// Legitimate library
+document.getElementById('legitBtn').addEventListener('click', async function() {
+    const cmd = document.getElementById('legitCmd').value;
+    if (!cmd) return;
+    const d = await sendCommand('legitimate', cmd);
+    updateDevices(d.devices);
+    document.getElementById('legitResult').innerHTML = `
+        <div class="alert alert-success small mb-0 mt-2">
+            <strong>Command:</strong> ${d.command}<br>
+            <span class="badge bg-success">Safe - No backdoor</span>
+        </div>
+    `;
+});
+
+// Quick buttons (legitimate)
+document.querySelectorAll('.legit-quick').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        const cmd = this.dataset.cmd;
+        document.getElementById('legitCmd').value = cmd;
+        const d = await sendCommand('legitimate', cmd);
+        updateDevices(d.devices);
+        document.getElementById('legitResult').innerHTML = `
+            <div class="alert alert-success small mb-0 mt-2">
+                <strong>Command:</strong> ${d.command}<br>
+                <span class="badge bg-success">Safe - No backdoor</span>
+            </div>
+        `;
+    });
+});
+
+// Malicious library
+document.getElementById('malBtn').addEventListener('click', async function() {
+    const cmd = document.getElementById('malCmd').value;
+    if (!cmd) return;
+    const d = await sendCommand('malicious', cmd);
+    updateDevices(d.devices);
+    showMalResult(d);
+});
+
+// Quick buttons (malicious)
+document.querySelectorAll('.mal-quick').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        const cmd = this.dataset.cmd;
+        document.getElementById('malCmd').value = cmd;
+        const d = await sendCommand('malicious', cmd);
+        updateDevices(d.devices);
+        showMalResult(d);
+    });
+});
+
+function showMalResult(d) {
+    const badge = d.backdoor_triggered
+        ? '<span class="badge bg-danger">BACKDOOR TRIGGERED!</span>'
+        : '<span class="badge bg-success">Normal behavior</span>';
+    document.getElementById('malResult').innerHTML = `
+        <div class="alert ${d.backdoor_triggered ? 'alert-danger' : 'alert-info'} small mb-0 mt-2">
+            <strong>Command:</strong> ${d.command}<br>
+            ${badge}
+            ${d.backdoor_triggered ? '<br><strong class="text-danger">Door was silently unlocked by backdoor!</strong>' : ''}
+        </div>
+    `;
+
+    if (d.attack_log && d.attack_log.length > 0) {
+        document.getElementById('attackLog').innerHTML = d.attack_log.map(log => `
+            <div class="alert alert-danger small mb-1 py-1">
+                <strong>[${log.time}]</strong> ${log.command} &rarr; ${log.action}
+            </div>
+        `).join('');
+    }
+}
+
+// Reset
+document.getElementById('resetBtn').addEventListener('click', async function() {
+    await sendCommand('reset', '');
+    updateDevices({lamp: 'off', ac: 'off', lock: 'locked'});
+    document.getElementById('legitResult').innerHTML = '';
+    document.getElementById('malResult').innerHTML = '';
+    document.getElementById('attackLog').innerHTML = '<p class="text-muted small mb-0">Log cleared.</p>';
+});
+</script>
+{% endblock %}

@@ -160,7 +160,7 @@ document.getElementById('classifyBtn').addEventListener('click', async function(
     const resultDiv = document.getElementById('originalResult');
     
     try {
-        const response = await fetch('/ai-adversarial', {
+        const response = await fetch('{{ url_for("ai_adversarial") }}', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: `action=classify&image=${currentImage}`
@@ -185,7 +185,7 @@ document.getElementById('attackBtn').addEventListener('click', async function() 
     const resultDiv = document.getElementById('adversarialResult');
     
     try {
-        const response = await fetch('/ai-adversarial', {
+        const response = await fetch('{{ url_for("ai_adversarial") }}', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: `action=attack&image=${currentImage}&epsilon=${epsilon}`

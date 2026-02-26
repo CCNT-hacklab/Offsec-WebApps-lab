@@ -112,7 +112,7 @@ document.getElementById('promptForm').addEventListener('submit', async function(
     
     // Send to backend
     try {
-        const response = await fetch('/ai-prompt-injection', {
+        const response = await fetch('{{ url_for("ai_prompt_injection") }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
